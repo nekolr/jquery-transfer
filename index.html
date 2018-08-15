@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>穿梭框</title>
+    <link rel="stylesheet" type="text/css" href="icon_font/css/icon_font.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.transfer.css"/>
+</head>
+<body>
+    <div class="transfer"></div>
+    <div style="left: 50%;">
+        选中的值：<span id="selectedItemSpan"></span>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.transfer.js"></script>
+<script type="text/javascript">
+    var cities = [
+        {
+            "city": "临沂市",
+            "value": 122
+        },
+        {
+            "city": "青岛市",
+            "value": 122
+        },
+        {
+            "city": "日照市",
+            "value": 122
+        },
+        {
+            "city": "潍坊市",
+            "value": 122
+        },
+        {
+            "city": "杭州市",
+            "value": 122
+        },
+        {
+            "city": "绍兴市",
+            "value": 122
+        },
+        {
+            "city": "温州市",
+            "value": 122
+        },
+        {
+            "city": "丽水市",
+            "value": 122
+        },
+        {
+            "city": "舟山市",
+            "value": 122
+        },
+        {
+            "city": "金华市",
+            "value": 122
+        }
+    ];
+
+    var groupData = [
+        {
+            "groupName": "山东省",
+            "groupData": [
+                {
+                    "city": "临沂市",
+                    "value": 122
+                },
+                {
+                    "city": "青岛市",
+                    "value": 643
+                },
+                {
+                    "city": "日照市",
+                    "value": 422
+                },
+                {
+                    "city": "潍坊市",
+                    "value": 622
+                }
+            ]
+        },
+        {
+            "groupName": "浙江省",
+            "groupData": [
+                {
+                    "city": "杭州市",
+                    "value": 132
+                },
+                {
+                    "city": "绍兴市",
+                    "value": 112
+                },
+                {
+                    "city": "温州市",
+                    "value": 124
+                },
+                {
+                    "city": "丽水市",
+                    "value": 121
+                },
+                {
+                    "city": "舟山市",
+                    "value": 432
+                },
+                {
+                    "city": "金华市",
+                    "value": 421
+                }
+            ]
+        }
+    ];
+
+    var settings = {
+        "inputId": "cityInput",
+        "data": cities,
+        "groupData": groupData,
+        "itemName": "city",
+        "groupItemName": "groupName",
+        "container": "transfer",
+        "valueName": "value",
+        "callable" : function (data) {
+            $("#selectedItemSpan").text(data)
+        }
+    };
+
+    Transfer.transfer(settings);
+</script>
+</html>
