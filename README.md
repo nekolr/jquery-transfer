@@ -1,8 +1,8 @@
 # 简介
 一个 jQuery 穿梭框插件。
 
-# 参数
-
+# 使用
+详情见 [index.html](https://github.com/nekolr/jquery-transfer/blob/master/index.html) 文件 
 # 分组
 
 ![分组](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/20180815211719.png)
