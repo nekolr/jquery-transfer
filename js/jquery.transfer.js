@@ -185,6 +185,9 @@ var Transfer = (function ($) {
                 }
                 // 数据变化触发回调
                 callable.call(this, getSelected());
+                // 标签切换按钮修改为未激活
+                $(addSelected).removeClass("btn-arrow-active");
+                $(deleteSelected).removeClass("btn-arrow-active");
             }
         });
 
