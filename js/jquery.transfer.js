@@ -20,6 +20,8 @@ var Transfer = (function ($) {
         var itemName = settings.itemName;
         // 分组的名称
         var groupItemName = settings.groupItemName;
+        // 分组的列表名称
+        var groupListName = settings.groupListName;
         // 值的名称
         var valueName = settings.valueName;
         // 容器
@@ -38,7 +40,7 @@ var Transfer = (function ($) {
         var total_num_str = "共" + settings.data.length + "项";
 
         // 分组总个数
-        var total_group_num = getGroupNum(settings.groupData);
+        var total_group_num = getGroupNum(settings.groupData, groupListName);
         // 分组总个数显示文本
         var total_group_num_str = "共" + total_group_num + "项";
 
@@ -126,7 +128,7 @@ var Transfer = (function ($) {
         $(transferId).find(totalNum).append(total_num_str);
 
         $(transferId).find(transferDoubleGroupListUl).empty();
-        $(transferId).find(transferDoubleGroupListUl).append(generateLeftGroupList(currentTimeStr, settings.groupData, itemName, groupItemName, valueName));
+        $(transferId).find(transferDoubleGroupListUl).append(generateLeftGroupList(currentTimeStr, settings.groupData, itemName, groupListName, groupItemName, valueName));
         $(transferId).find(groupTotalNum).empty();
         $(transferId).find(groupTotalNum).append(total_group_num_str);
 
@@ -590,7 +592,7 @@ var Transfer = (function ($) {
      * @param data
      * @returns {string}
      */
-    function generateLeftGroupList(currentTimeStr, data, itemName, groupItemName, valueName) {
+    function generateLeftGroupList(currentTimeStr, data, itemName, groupListName, groupItemName, valueName) {
         var listHtmlStr = "";
         for (var i = 0; i < data.length; i++) {
             listHtmlStr = listHtmlStr +
@@ -599,13 +601,13 @@ var Transfer = (function ($) {
                 '<input type="checkbox" class="checkbox-normal group-select-all-' + currentTimeStr + '" id="group_' + i + '_' + currentTimeStr + '">' +
                 '<label for="group_' + i + '_' + currentTimeStr + '" class="group-name-' + currentTimeStr + '">' + data[i][groupItemName] + '</label>' +
                 '</div>';
-            if (data[i].groupData.length > 0) {
+            if (data[i][groupListName].length > 0) {
                 listHtmlStr = listHtmlStr + '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + currentTimeStr + '">'
-                for (var j = 0; j < data[i].groupData.length; j++) {
+                for (var j = 0; j < data[i][groupListName].length; j++) {
                     listHtmlStr = listHtmlStr + '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + currentTimeStr + '">' +
                         '<div class="checkbox-group">' +
-                        '<input type="checkbox" value="' + data[i].groupData[j][valueName] + '" class="checkbox-normal group-checkbox-item-' + currentTimeStr + ' belongs-group-' + i + '-' + currentTimeStr + '" id="group_' + i + '_checkbox_' + j + '_' + currentTimeStr + '">' +
-                        '<label for="group_' + i + '_checkbox_' + j + '_' + currentTimeStr + '" class="group-checkbox-name-' + currentTimeStr + '">' + data[i].groupData[j][itemName] + '</label>' +
+                        '<input type="checkbox" value="' + data[i][groupListName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + currentTimeStr + ' belongs-group-' + i + '-' + currentTimeStr + '" id="group_' + i + '_checkbox_' + j + '_' + currentTimeStr + '">' +
+                        '<label for="group_' + i + '_checkbox_' + j + '_' + currentTimeStr + '" class="group-checkbox-name-' + currentTimeStr + '">' + data[i][groupListName][j][itemName] + '</label>' +
                         '</div>' +
                         '</li>';
                 }
@@ -623,10 +625,10 @@ var Transfer = (function ($) {
      * @param data
      * @returns {number}
      */
-    function getGroupNum(data) {
+    function getGroupNum(data, groupListName) {
         var total_group_num = 0;
         for (var i = 0; i < data.length; i++) {
-            var groupData = data[i].groupData;
+            var groupData = data[i][groupListName];
             if (groupData.length > 0) {
                 total_group_num = total_group_num + groupData.length;
             }
