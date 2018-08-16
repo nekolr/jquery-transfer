@@ -120,8 +120,9 @@
         "groupListName" : "groupData",
         "container": "transfer",
         "valueName": "value",
-        "callable" : function (data) {
-            $("#selectedItemSpan").text(data)
+        "callable" : function (data, names) {
+            console.log("选中项的 id 为：" + data)
+            $("#selectedItemSpan").text(names)
         }
     };
 

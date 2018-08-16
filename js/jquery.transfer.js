@@ -184,7 +184,7 @@ var Transfer = (function ($) {
                     $(transferId).find(totalNum).append("共" + $(transferId).find(transferDoubleListLi).length + "项");
                 }
                 // 数据变化触发回调
-                callable.call(this, getSelected());
+                callable.call(this, getSelected(), getSelectedName());
                 // 标签切换按钮修改为未激活
                 $(addSelected).removeClass("btn-arrow-active");
                 $(deleteSelected).removeClass("btn-arrow-active");
@@ -416,7 +416,7 @@ var Transfer = (function ($) {
             $(transferId).find(transferDoubleSelectedListUl).empty();
             $(transferId).find(transferDoubleSelectedListUl).append(listHtmlStr);
             // 数据变化触发回调
-            callable.call(this, getSelected());
+            callable.call(this, getSelected(), getSelectedName());
         });
 
         /**
@@ -488,7 +488,7 @@ var Transfer = (function ($) {
             }
             $(deleteSelected).removeClass("btn-arrow-active");
             // 数据变化触发回调
-            callable.call(this, getSelected());
+            callable.call(this, getSelected(), getSelectedName());
         });
 
         /**
@@ -664,6 +664,24 @@ var Transfer = (function ($) {
     }
 
     /**
+     * 返回选中的项目名称数组
+     * @returns {Array}
+     */
+    function getSelectedName() {
+        // 穿梭框
+        var transferId = "#transfer_double_" + inputId;
+        var selected = [];
+        var transferDoubleSelectedListLi = ".transfer-double-selected-list-li-" + currentTimeStr;
+
+        for (var i = 0; i < $(transferId).find(transferDoubleSelectedListLi).length; i++) {
+            // 模糊匹配，将所有匹配项显示
+            var value = $(transferId).find(transferDoubleSelectedListLi).eq(i).find(".checkbox-group").find("label").text();
+            selected.push(value);
+        }
+        return selected;
+    }
+
+    /**
      * 渲染穿梭框
      * @param inputId
      * @param currentTimeStr
@@ -752,7 +770,6 @@ var Transfer = (function ($) {
     }
 
     return {
-        transfer: transfer,
-        getSelected: getSelected
+        transfer: transfer
     }
 })($);
