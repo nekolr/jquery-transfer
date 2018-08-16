@@ -34,13 +34,18 @@ var Transfer = (function ($) {
         // 接收选中项文本框
         var selectInputId = "#" + inputId;
 
+        // 列表数据
+        var data = settings.data || [];
+        // 分组列表数据
+        var groupData = settings.groupData || [];
+
         // 数据项总个数
         var total_num = settings.data.length;
         // 总个数显示文本
         var total_num_str = "共" + settings.data.length + "项";
 
         // 分组总个数
-        var total_group_num = getGroupNum(settings.groupData, groupListName);
+        var total_group_num = getGroupNum(groupData, groupListName);
         // 分组总个数显示文本
         var total_group_num_str = "共" + total_group_num + "项";
 
@@ -123,12 +128,12 @@ var Transfer = (function ($) {
          * 数据渲染
          */
         $(transferId).find(transferDoubleListUl).empty();
-        $(transferId).find(transferDoubleListUl).append(generateLeftList(currentTimeStr, settings.data, itemName, valueName));
+        $(transferId).find(transferDoubleListUl).append(generateLeftList(currentTimeStr, data, itemName, valueName));
         $(transferId).find(totalNum).empty();
         $(transferId).find(totalNum).append(total_num_str);
 
         $(transferId).find(transferDoubleGroupListUl).empty();
-        $(transferId).find(transferDoubleGroupListUl).append(generateLeftGroupList(currentTimeStr, settings.groupData, itemName, groupListName, groupItemName, valueName));
+        $(transferId).find(transferDoubleGroupListUl).append(generateLeftGroupList(currentTimeStr, groupData, itemName, groupListName, groupItemName, valueName));
         $(transferId).find(groupTotalNum).empty();
         $(transferId).find(groupTotalNum).append(total_group_num_str);
 
