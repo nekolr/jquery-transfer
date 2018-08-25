@@ -512,7 +512,9 @@ var Transfer = (function ($) {
 
             for (var j = 0; j < $(transferId).find(transferDoubleListLi).length; j++) {
                 // 模糊匹配，将所有匹配项显示
-                if (!$(transferId).find(checkboxItem).eq(j).is(':checked') && $(transferId).find(transferDoubleListLi).eq(j).text().substr(0, $(listSearchId).val().length) == $(listSearchId).val()) {
+                if (!$(transferId).find(checkboxItem).eq(j).is(':checked') 
+                    && $(transferId).find(transferDoubleListLi).eq(j).text()
+                        .substr(0, $(listSearchId).val().length).toLowerCase() == $(listSearchId).val().toLowerCase()) {
                     $(transferId).find(transferDoubleListLi).eq(j).css('display', 'block');
                 }
             }
@@ -543,7 +545,9 @@ var Transfer = (function ($) {
 
             for (var j = 0; j < $(transferId).find(transferDoubleGroupListLiUlLi).length; j++) {
                 // 模糊匹配，将所有匹配项显示
-                if (!$(transferId).find(groupCheckboxItem).eq(j).is(':checked') && $(transferId).find(transferDoubleGroupListLiUlLi).eq(j).text().substr(0, $(groupListSearchId).val().length) == $(groupListSearchId).val()) {
+                if (!$(transferId).find(groupCheckboxItem).eq(j).is(':checked') 
+                    && $(transferId).find(transferDoubleGroupListLiUlLi).eq(j).text()
+                        .substr(0, $(groupListSearchId).val().length).toLowerCase() == $(groupListSearchId).val().toLowerCase()) {
                     // 分组 li 改为显示
                     $(transferId).find(transferDoubleGroupListLiUlLi).eq(j).parent().parent().css('display', 'block');
                     $(transferId).find(transferDoubleGroupListLiUlLi).eq(j).css('display', 'block');
@@ -567,7 +571,8 @@ var Transfer = (function ($) {
 
             for (var i = 0; i < $(transferId).find(transferDoubleSelectedListLi).length; i++) {
                 // 模糊匹配，将所有匹配项显示
-                if ($(transferId).find(transferDoubleSelectedListLi).eq(i).text().substr(0, $(selectedListSearchId).val().length) == $(selectedListSearchId).val()) {
+                if ($(transferId).find(transferDoubleSelectedListLi).eq(i).text()
+                        .substr(0, $(selectedListSearchId).val().length).toLowerCase() == $(selectedListSearchId).val().toLowerCase()) {
                     $(transferId).find(transferDoubleSelectedListLi).eq(i).css('display', 'block');
                 }
             }
