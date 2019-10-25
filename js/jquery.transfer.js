@@ -323,9 +323,11 @@
      */
     function getSelectedItems(itemName, vlaueName) {
         var selected = [];
-        for (var i = 0; i < $(transferId).find(transferDoubleSelectedListLiClass).length; i++) {
-            var name = $(transferId).find(transferDoubleSelectedListLiClass).eq(i).find(".checkbox-group").find("label").text();
-            var value = $(transferId).find(transferDoubleSelectedListLiClass).eq(i).find(".checkbox-group").find("input").val();
+        var transferDoubleSelectedListLiArray = $(transferId).find(transferDoubleSelectedListLiClass);
+        for (var i = 0; i < transferDoubleSelectedListLiArray.length; i++) {
+            var checkboxGroup = transferDoubleSelectedListLiArray.eq(i).find(".checkbox-group");
+            var name = checkboxGroup.find("label").text();
+            var value = checkboxGroup.find("input").val();
             var item = {};
             item[itemName] = name;
             item[vlaueName] = value;
@@ -360,13 +362,13 @@
                     $(this).prop("checked", false);
                 });
                 
-                $(addSelectedButtonId).removeClass("btn-arrow-active");
                 $(transferId).find(transferDoubleSelectedListUlClass).empty();
                 // reset right label text
                 $(transferId).find(selectedTotalNumLabelClass).text(default_right_item_total_num_text);
                 // unselected
                 if ($(transferId).find(firstTabContentClass).css("display") != "none") {
-                    $(transferId).find(transferDoubleGroupListLiUlLiClass).each(function () {
+                    var transferDoubleGroupListLiUlLiArray = $(transferId).find(transferDoubleGroupListLiUlLiClass);
+                    transferDoubleGroupListLiUlLiArray.each(function () {
                         $(this).css('display', 'block');
                     });
                     $(transferId).find(groupCheckboxItemClass).each(function () {
@@ -376,8 +378,10 @@
                     $(transferId).find(leftItemSelectAllId).prop("disabled", "");
 
                     $(transferId).find(groupTotalNumLabelClass).empty();
-                    $(transferId).find(groupTotalNumLabelClass).append(getTotalNumTextByTemplate(default_total_num_text_template, $(transferId).find(transferDoubleGroupListLiUlLiClass).length));
+                    $(transferId).find(groupTotalNumLabelClass).append(getTotalNumTextByTemplate(default_total_num_text_template, transferDoubleGroupListLiUlLiArray.length));
                 } else {// group
+
+                    var transferDoubleListLiArray = $(transferId).find(transferDoubleListLiClass);
 
                     // empty disabled
                     for (var j = 0; j < $(transferId).find(groupSelectAllClass).length; j++) {
@@ -385,14 +389,14 @@
                     }
                     $(transferId).find(groupItemSelectAllId).prop("disabled", "");
 
-                    $(transferId).find(transferDoubleListLiClass).each(function () {
+                    transferDoubleListLiArray.each(function () {
                         $(this).css('display', 'block');
                     });
                     $(transferId).find(checkboxItemClass).each(function () {
                         $(this).prop("checked", false);
                     });
                     $(transferId).find(totalNumLabelClass).empty();
-                    $(transferId).find(totalNumLabelClass).append(getTotalNumTextByTemplate(default_total_num_text_template, $(transferId).find(transferDoubleListLiClass).length));
+                    $(transferId).find(totalNumLabelClass).append(getTotalNumTextByTemplate(default_total_num_text_template, transferDoubleListLiArray.length));
                 }
 
                 // callable
@@ -432,7 +436,13 @@
         $(transferId).on("click", groupCheckboxItemClass, function () {
             var selected_num = 0;
             for (var i = 0; i < $(transferId).find(groupCheckboxItemClass).length; i++) {
-                if ($(transferId).find(transferDoubleGroupListLiUlLiClass).eq(i).css('display') != "none" && $(transferId).find(groupCheckboxItemClass).eq(i).is(':checked')) {
+                var groupCheckboxItems = $(transferId).find(groupCheckboxItemClass);
+                if ($(transferId).find(transferDoubleGroupListLiUlLiClass).eq(i).css('display') != "none" && groupCheckboxItems.eq(i).is(':checked')) {
+                    var id = groupCheckboxItems.eq(i).prop("id");
+                    var groupCheckboxItemSplitArray = id.split("_");
+                    var groupIndex = groupCheckboxItemSplitArray[1];
+                    $(groupSelectAllClass).eq(groupIndex)
+                    // TODO: 
                     selected_num++;
                 }
             }
@@ -575,65 +585,61 @@
             var listHtmlStr = "";
             var selectedItemNum = 0;
             if ($(transferId).find(firstTabContentClass).css("display") != "none") {
-                for (var i = 0; i < $(transferId).find(groupCheckboxItemClass).length; i++) {
-                    if ($(transferId).find(groupCheckboxItemClass).eq(i).is(':checked')) {
-                        var checkboxItemId = $(transferId).find(groupCheckboxItemClass).eq(i).attr("id");
+                var groupCheckboxItems = $(transferId).find(groupCheckboxItemClass);
+                for (var i = 0; i < groupCheckboxItems.length; i++) {
+                    if (groupCheckboxItems.eq(i).is(':checked')) {
+                        var checkboxItemId = groupCheckboxItems.eq(i).attr("id");
                         var checkboxItemArray = checkboxItemId.split("_");
-                        var groupIdIndex = checkboxItemArray[1];
-                        var idIndex = checkboxItemArray[3];
-                        var val = $(transferId).find(groupCheckboxNameLabelClass).eq(i).text();
-                        var value = $(transferId).find(groupCheckboxItemClass).eq(i).val();
+                        var groupIndex = checkboxItemArray[1];
+                        var itemIndex = checkboxItemArray[3];
+                        var labelText = $(transferId).find(groupCheckboxNameLabelClass).eq(i).text();
+                        var value = groupCheckboxItems.eq(i).val();
                         $(transferId).find(transferDoubleGroupListLiUlLiClass).eq(i).css('display', 'none');
-                        listHtmlStr = listHtmlStr + '<li class="transfer-double-selected-list-li transfer-double-selected-list-li-' + id + ' .clearfix">' +
-                            '<div class="checkbox-group">' +
-                            '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="group_' + groupIdIndex + '_selectedCheckbox_' + idIndex + '_' + id + '">' +
-                            '<label class="checkbox-selected-name-' + id + '" for="group_' + groupIdIndex + '_selectedCheckbox_' + idIndex + '_' + id + '">' + val + '</label>' +
-                            '</div>' +
-                            '</li>'
+                        listHtmlStr = listHtmlStr + generateGroupItem(id, groupIndex, itemIndex, value, labelText);
                         selectedItemNum = selectedItemNum + 1;
                     }
                 }
-                for (var j = 0; j < $(transferId).find(groupSelectAllClass).length; j++) {
-                    if ($(transferId).find(groupSelectAllClass).eq(j).is(":checked")) {
-                        $(transferId).find(groupSelectAllClass).eq(j).prop("disabled", "disabled");
+                var groupSelectAllArray = $(transferId).find(groupSelectAllClass);
+                for (var j = 0; j < groupSelectAllArray.length; j++) {
+                    if (groupSelectAllArray.eq(j).is(":checked")) {
+                        groupSelectAllArray.eq(j).prop("disabled", "disabled");
                     }
                 }
-                $(transferId).find(groupTotalNumLabelClass).empty();
+                var groupTotalNumLabel = $(transferId).find(groupTotalNumLabelClass);
+                groupTotalNumLabel.empty();
                 // calculate left group items number
                 new_group_item_total_num = group_item_total_num - selectedItemNum;
                 // calculate selected items number
                 selected_total_num = selectedItemNum;
                 var new_group_item_total_num_text = getTotalNumTextByTemplate(default_total_num_text_template, new_group_item_total_num);
-                $(transferId).find(groupTotalNumLabelClass).append(new_group_item_total_num_text);
+                groupTotalNumLabel.append(new_group_item_total_num_text);
                 $(transferId).find(selectedTotalNumLabelClass).text(getTotalNumTextByTemplate(default_total_num_text_template, selected_total_num));
                 if (new_group_item_total_num == 0) {
                     $(groupItemSelectAllId).prop("checked", true);
                     $(groupItemSelectAllId).prop("disabled", "disabled");
                 }
             } else {
-                for (var i = 0; i < $(transferId).find(checkboxItemClass).length; i++) {
-                    if ($(transferId).find(checkboxItemClass).eq(i).is(':checked')) {
-                        var checkboxItemId = $(transferId).find(checkboxItemClass).eq(i).attr("id");
-                        var idIndex = checkboxItemId.split("_")[1];
-                        var val = $(transferId).find(checkboxItemLabelClass).eq(i).text();
-                        var value = $(transferId).find(checkboxItemClass).eq(i).val();
+                var checkboxItems = $(transferId).find(checkboxItemClass);
+                for (var i = 0; i < checkboxItems.length; i++) {
+                    if (checkboxItems.eq(i).is(':checked')) {
+                        var checkboxItemId = checkboxItems.eq(i).attr("id");
+                        // checkbox item index
+                        var index = checkboxItemId.split("_")[1];
+                        var labelText = $(transferId).find(checkboxItemLabelClass).eq(i).text();
+                        var value = checkboxItems.eq(i).val();
                         $(transferId).find(transferDoubleListLiClass).eq(i).css('display', 'none');
-                        listHtmlStr = listHtmlStr + '<li class="transfer-double-selected-list-li  transfer-double-selected-list-li-' + id + ' .clearfix">' +
-                            '<div class="checkbox-group">' +
-                            '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="selectedCheckbox_' + idIndex + '_' + id + '">' +
-                            '<label class="checkbox-selected-name-' + id + '" for="selectedCheckbox_' + idIndex + '_' + id + '">' + val + '</label>' +
-                            '</div>' +
-                            '</li>';
+                        listHtmlStr = listHtmlStr + generateItem(id, index, value, labelText);
                         selectedItemNum = selectedItemNum + 1;
                     }
                 }
-                $(transferId).find(totalNumLabelClass).empty();
+                var totalNumLabel = $(transferId).find(totalNumLabelClass); 
+                totalNumLabel.empty();
                 // calculate left items number
                 new_item_total_num = item_total_num - selectedItemNum;
                 // calculate selected items number
                 selected_total_num = selectedItemNum;
                 var new_item_total_num_text = getTotalNumTextByTemplate(default_total_num_text_template, new_item_total_num);
-                $(transferId).find(totalNumLabelClass).append(new_item_total_num_text);
+                totalNumLabel.append(new_item_total_num_text);
                 $(transferId).find(selectedTotalNumLabelClass).text(getTotalNumTextByTemplate(default_total_num_text_template, selected_total_num));
                 if (new_item_total_num == 0) {
                     $(leftItemSelectAllId).prop("checked", true);
@@ -642,14 +648,48 @@
             }
 
             $(addSelectedButtonId).removeClass("btn-arrow-active");
-            $(transferId).find(transferDoubleSelectedListUlClass).empty();
-            $(transferId).find(transferDoubleSelectedListUlClass).append(listHtmlStr);
+            var transferDoubleSelectedListUl = $(transferId).find(transferDoubleSelectedListUlClass);
+            transferDoubleSelectedListUl.empty();
+            transferDoubleSelectedListUl.append(listHtmlStr);
 
             // callable
             if (Object.prototype.toString.call(callable) === "[object Function]") {
                 callable.call(this, getSelectedItems(itemName, valueName));
             }
         });
+    }
+
+    /**
+     * generate item
+     * @param {string} id 
+     * @param {number} index checkbox item index
+     * @param {string} value 
+     * @param {string} labelText 
+     */
+    function generateItem(id, index, value, labelText) {
+        return '<li class="transfer-double-selected-list-li  transfer-double-selected-list-li-' + id + ' .clearfix">' +
+                            '<div class="checkbox-group">' +
+                            '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="selectedCheckbox_' + index + '_' + id + '">' +
+                            '<label class="checkbox-selected-name-' + id + '" for="selectedCheckbox_' + index + '_' + id + '">' + labelText + '</label>' +
+                            '</div>' +
+                            '</li>';
+    }
+
+    /**
+     * generate group item
+     * @param {string} id 
+     * @param {number} groupIndex group checkbox item index
+     * @param {number} itemIndex checkbox item index
+     * @param {string} value 
+     * @param {string} labelText 
+     */
+    function generateGroupItem(id, groupIndex, itemIndex, value, labelText) {
+        return '<li class="transfer-double-selected-list-li transfer-double-selected-list-li-' + id + ' .clearfix">' +
+        '<div class="checkbox-group">' +
+        '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' +
+        '<label class="checkbox-selected-name-' + id + '" for="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' + labelText + '</label>' +
+        '</div>' +
+        '</li>'
     }
 
     /**
@@ -663,8 +703,9 @@
             var deleteItemNum = 0;
             if ($(transferId).find(firstTabContentClass).css("display") != "none") {
                 for (var i = 0; i < $(transferId).find(checkboxSelectedItemClass).length;) {
-                    if ($(transferId).find(checkboxSelectedItemClass).eq(i).is(':checked')) {
-                        var checkboxSelectedItemId = $(transferId).find(checkboxSelectedItemClass).eq(i).attr("id");
+                    var checkboxSelectedItems = $(transferId).find(checkboxSelectedItemClass);
+                    if (checkboxSelectedItems.eq(i).is(':checked')) {
+                        var checkboxSelectedItemId = checkboxSelectedItems.eq(i).attr("id");
                         var groupItemIdArray = checkboxSelectedItemId.split("_");
                         var groupId = groupItemIdArray[1];
                         var idIndex = groupItemIdArray[3];
@@ -692,8 +733,9 @@
                 }
             } else {
                 for (var i = 0; i < $(transferId).find(checkboxSelectedItemClass).length;) {
-                    if ($(transferId).find(checkboxSelectedItemClass).eq(i).is(':checked')) {
-                        var checkboxSelectedItemId = $(transferId).find(checkboxSelectedItemClass).eq(i).attr("id");
+                    var checkboxSelectedItems = $(transferId).find(checkboxSelectedItemClass);
+                    if (checkboxSelectedItems.eq(i).is(':checked')) {
+                        var checkboxSelectedItemId = checkboxSelectedItems.eq(i).attr("id");
                         var idIndex = checkboxSelectedItemId.split("_")[1];
                         var val = $(transferId).find(checkboxSelectedNameLabelClass).eq(i).text();
                         $(transferId).find(transferDoubleSelectedListLiClass).eq(i).remove();
