@@ -1,25 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>穿梭框</title>
-    <link rel="stylesheet" type="text/css" href="icon_font/css/icon_font.css"/>
-    <link rel="stylesheet" type="text/css" href="css/jquery.transfer.css"/>
+    <title>jQuery transfer</title>
+    <link rel="stylesheet" type="text/css" href="icon_font/css/icon_font.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.transfer.css" />
 </head>
+
 <body>
     <div class="transfer"></div>
-    <div>
-        选中的值：<span id="selectedItemSpan"></span>
-    </div>
+    <div><textarea id="result" cols="30" rows="25"></textarea></div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.transfer.js?v=0.0.1"></script>
 <script type="text/javascript">
     var cities = [
-        {
-            "city": "临沂市",
-            "value": 122
-        },
         {
             "city": "青岛市",
             "value": 132
@@ -112,20 +108,23 @@
     ];
 
     var settings = {
-        "inputId": "cityInput",
-        "data": cities,
-        "groupData": groupData,
+        "dataArray": cities,
+        "groupDataArray": groupData,
         "itemName": "city",
         "groupItemName": "groupName",
-        "groupListName" : "groupData",
-        "container": "transfer",
+        "groupArrayName": "groupData",
         "valueName": "value",
-        "callable" : function (data, names) {
-            console.log("选中项的 id 为：" + data)
-            $("#selectedItemSpan").text(names)
+        "callable": function (items) {
+            var result = [];
+            $.each(items, function(index, element){
+                result.push(element.city);
+            })
+            $("#result").text(result);
         }
     };
 
-    Transfer.transfer(settings);
+    $(".transfer").transfer(settings);
+
 </script>
+
 </html>
