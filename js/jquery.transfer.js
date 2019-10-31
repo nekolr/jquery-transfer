@@ -106,7 +106,22 @@
         // id selector for the delete button
         this.deleteSelectedButtonId = "#delete_selected_" + this.id;
     }
+    
+    $.fn.Transfer = function(options) {
+        // new Transfer
+        var transfer = new Transfer(this, options);
+        // init
+        transfer.init();
 
+        return {
+            // get selected items
+            getSelectedItems: transfer.get_selected_items
+        }
+    }
+
+    /**
+     * init
+     */
     Transfer.prototype.init = function() {
         // generate transfer
         this.$element.append(this.generate_transfer());
@@ -965,15 +980,6 @@
             selected.push(item);
         }
         return selected;
-    }
-
-    $.fn.Transfer = function(options) {
-        var transfer = new Transfer(this, options);
-        transfer.init();
-        
-        return {
-            getSelectedItems: transfer.get_selected_items
-        }
     }
 
     /**
