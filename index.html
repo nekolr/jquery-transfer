@@ -6,125 +6,166 @@
     <title>jQuery transfer</title>
     <link rel="stylesheet" type="text/css" href="icon_font/css/icon_font.css" />
     <link rel="stylesheet" type="text/css" href="css/jquery.transfer.css" />
+    <style>
+        .transfer-demo {
+            width: auto;
+            height: 400px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="transfer"></div>
-    <div><textarea id="result" cols="30" rows="25"></textarea></div>
+    <div id="transfer1" class="transfer-demo"></div>
+    <div id="transfer2" class="transfer-demo"></div>
+    <div id="transfer3" class="transfer-demo"></div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery.transfer.js?v=0.0.1"></script>
+<script type="text/javascript" src="js/jquery.transfer.js"></script>
 <script type="text/javascript">
-    var cities = [
+    var dataArray1 = [
         {
-            "city": "青岛市",
+            "city": "Beijing",
             "value": 132
         },
         {
-            "city": "日照市",
+            "city": "Shanghai",
             "value": 422
         },
         {
-            "city": "潍坊市",
+            "city": "Chengdu",
             "value": 232
         },
         {
-            "city": "杭州市",
+            "city": "Wuhan",
             "value": 765
         },
         {
-            "city": "绍兴市",
+            "city": "Tianjin",
             "value": 876
         },
         {
-            "city": "温州市",
+            "city": "Guangzhou",
             "value": 453
         },
         {
-            "city": "丽水市",
+            "city": "Hongkong",
             "value": 125
-        },
-        {
-            "city": "舟山市",
-            "value": 633
-        },
-        {
-            "city": "金华市",
-            "value": 832
         }
     ];
 
-    var groupData = [
+    var settings1 = {
+        "dataArray": dataArray1,
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    $("#transfer1").Transfer(settings1);
+</script>
+
+<script>
+
+    var dataArray2 = [
         {
-            "groupName": "山东省",
+            "city": "Beijing",
+            "value": 132
+        },
+        {
+            "city": "Shanghai",
+            "value": 422,
+            "selected": true
+        },
+        {
+            "city": "Chengdu",
+            "value": 232
+        },
+        {
+            "city": "Wuhan",
+            "value": 765,
+            "selected": true
+        },
+        {
+            "city": "Tianjin",
+            "value": 876
+        },
+        {
+            "city": "Guangzhou",
+            "value": 453
+        },
+        {
+            "city": "Hongkong",
+            "value": 125
+        }
+    ];
+
+    var settings2 = {
+        "dataArray": dataArray2,
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    $("#transfer2").Transfer(settings2);
+</script>
+
+<script>
+    var groupDataArray = [
+        {
+            "groupName": "China",
             "groupData": [
                 {
-                    "city": "临沂市",
+                    "city": "Beijing",
                     "value": 122
                 },
                 {
-                    "city": "青岛市",
+                    "city": "Shanghai",
                     "value": 643
                 },
                 {
-                    "city": "日照市",
+                    "city": "Qingdao",
                     "value": 422
                 },
                 {
-                    "city": "潍坊市",
+                    "city": "Tianjin",
                     "value": 622
                 }
             ]
         },
         {
-            "groupName": "浙江省",
+            "groupName": "Japan",
             "groupData": [
                 {
-                    "city": "杭州市",
+                    "city": "Tokyo",
                     "value": 132
                 },
                 {
-                    "city": "绍兴市",
+                    "city": "Osaka",
                     "value": 112
                 },
                 {
-                    "city": "温州市",
-                    "value": 124
-                },
-                {
-                    "city": "丽水市",
-                    "value": 121
-                },
-                {
-                    "city": "舟山市",
-                    "value": 432
-                },
-                {
-                    "city": "金华市",
-                    "value": 421
+                    "city": "Yokohama",
+                    "value": 191
                 }
             ]
         }
     ];
 
-    var settings = {
-        "dataArray": cities,
-        "groupDataArray": groupData,
-        "itemName": "city",
+    var settings3 = {
+        "groupDataArray": groupDataArray,
         "groupItemName": "groupName",
         "groupArrayName": "groupData",
+        "itemName": "city",
         "valueName": "value",
         "callable": function (items) {
-            var result = [];
-            $.each(items, function(index, element){
-                result.push(element.city);
-            })
-            $("#result").text(result);
+            console.dir(items)
         }
     };
 
-    $(".transfer").transfer(settings);
-
+    $("#transfer3").Transfer(settings3);
 </script>
 
 </html>

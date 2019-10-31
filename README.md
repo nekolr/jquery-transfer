@@ -2,14 +2,19 @@
 A jQuery plugin that is a shuttle box.
 
 # Preview
+![snapshot01](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot01.png)
 
-![grouping](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/20180815211719.png)
+![snapshot02](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot02.png)
 
-![grouping](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/20180815211740.png)
+![snapshot03](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot03.png)
 
-![no grouping](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/20180815211809.png)
+![snapshot04](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot04.png)
 
-![fast search](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/20180815211846.png)
+![snapshot05](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot05.png)
+
+![snapshot06](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot06.png)
+
+![snapshot07](https://github.com/nekolr/jquery-transfer/blob/master/snapshot/snapshot07.png)
 
 # options
 | option | description | type | default |
@@ -56,7 +61,9 @@ var settings = {
     }
 };
 
-$(".transfer").transfer(settings);
+var transfer = $(".transfer").Transfer(settings);
+// get selected items
+transfer.getSelectedItems();
 ```
 
 ## no grouping
@@ -82,5 +89,7 @@ var settings = {
     }
 };
 
-$(".transfer").transfer(settings);
+var transfer = $(".transfer").Transfer(settings);
+// get selected items
+transfer.getSelectedItems();
 ```

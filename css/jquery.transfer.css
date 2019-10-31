@@ -12,10 +12,15 @@ body {
     padding: 15px 0;
     line-height: 22px;
 }
+
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+.selected-hidden {
+    display: none;
 }
 
 .checkbox-group .checkbox-normal {
@@ -55,8 +60,6 @@ body {
     border: 1px solid #bbb;
 }
 
-/*设置选中的radio的样式*/
-/* + 是兄弟选择器,获取选中后的label元素*/
 .radio-group .radio-normal + label:before {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -97,8 +100,7 @@ body {
     border: 1px solid #bbb;
 }
 
-/*设置选中的radio的样式*/
-/* + 是兄弟选择器,获取选中后的label元素*/
+ /* 设置选中的 radio 的样式 + 是兄弟选择器，获取选中后的 label 元素 */
 .checkbox-group .checkbox-normal + label:before {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -217,26 +219,6 @@ body {
     border-radius: 2px;
 }
 
-.transfer-double-content-tabs {
-    display: inline-block;
-    width: 100%;
-    height: 36px;
-    border-bottom: 1px solid #eee;
-}
-
-.transfer-double-content-tabs .tab-item-name {
-    display: inline-block;
-    height: 36px;
-    line-height: 36px;
-    margin-left: 15%;
-    cursor: pointer;
-}
-
-.tab-active {
-    color: #387EE8;
-    border-bottom: 2px solid #387EE8;
-}
-
 .transfer-double-content-param {
     display: inline-block;
     width: 100%;
@@ -248,7 +230,6 @@ body {
 
 .transfer-double-content-param .param-item {
     display: inline-block;
-    width: 40%;
     height: 36px;
     line-height: 36px;
 }
@@ -256,14 +237,6 @@ body {
 .vertical-separation-line {
     color: #eee;
     margin: 0 10px;
-}
-
-.transfer-double-list {
-    display: none;
-}
-
-.tab-content-active {
-    display: block;
 }
 
 .transfer-double-list-header {
@@ -320,10 +293,6 @@ body {
 
 .transfer-double-list-main .transfer-double-group-list-ul .transfer-double-group-list-li .transfer-double-group-list-li-ul .transfer-double-group-list-li-ul-li {
     margin-top: 5px;
-}
-
-.transfer-double-selected-list {
-
 }
 
 .transfer-double-selected-list-header {
@@ -428,7 +397,7 @@ body {
 }
 
 /*
- *清除浮动
+ * clear float
  */
 .clearfix:before, .clearfix:after {
     display: table;
@@ -467,9 +436,8 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
 }
 
 /*
- * webkit浏览器滚动条样式
+ * webkit scrollbar
  */
-
 .transfer-double-list-main::-webkit-scrollbar {
     width: 4px;
     height: 4px;
