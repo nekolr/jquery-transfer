@@ -759,12 +759,12 @@
             this._data.forEach(function(key, value) {
                 remain_total_count += value["total_count"];
             })
-            selected_total_num = this.group_item_total_num - remain_total_count;
+            this.selected_total_num = this.group_item_total_num - remain_total_count;
 
             var groupTotalNumLabel = $(this.transferId).find(this.groupTotalNumLabelClass);
             groupTotalNumLabel.empty();
             groupTotalNumLabel.append(get_total_num_text(this.default_total_num_text_template, remain_total_count));
-            $(this.transferId).find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, selected_total_num));
+            $(this.transferId).find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
 
             if (remain_total_count == 0) {
                 $(this.groupItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
