@@ -18,6 +18,7 @@
     <div id="transfer1" class="transfer-demo"></div>
     <div id="transfer2" class="transfer-demo"></div>
     <div id="transfer3" class="transfer-demo"></div>
+    <div id="transfer4" class="transfer-demo"></div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery.transfer.js"></script>
@@ -113,7 +114,7 @@
 </script>
 
 <script>
-    var groupDataArray = [
+    var groupDataArray1 = [
         {
             "groupName": "China",
             "groupData": [
@@ -155,7 +156,7 @@
     ];
 
     var settings3 = {
-        "groupDataArray": groupDataArray,
+        "groupDataArray": groupDataArray1,
         "groupItemName": "groupName",
         "groupArrayName": "groupData",
         "itemName": "city",
@@ -168,4 +169,63 @@
     $("#transfer3").Transfer(settings3);
 </script>
 
+<script>
+var groupDataArray2 = [
+        {
+            "groupName": "China",
+            "groupData": [
+                {
+                    "city": "Beijing",
+                    "value": 122,
+                    "selected": true
+                },
+                {
+                    "city": "Shanghai",
+                    "value": 643
+                },
+                {
+                    "city": "Qingdao",
+                    "value": 422
+                },
+                {
+                    "city": "Tianjin",
+                    "value": 622
+                }
+            ]
+        },
+        {
+            "groupName": "Japan",
+            "groupData": [
+                {
+                    "city": "Tokyo",
+                    "value": 132,
+                    "selected": true
+                },
+                {
+                    "city": "Osaka",
+                    "value": 112,
+                    "selected": true
+                },
+                {
+                    "city": "Yokohama",
+                    "value": 191,
+                    "selected": true
+                }
+            ]
+        }
+    ];
+
+    var settings4 = {
+        "groupDataArray": groupDataArray2,
+        "groupItemName": "groupName",
+        "groupArrayName": "groupData",
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    $("#transfer4").Transfer(settings4);
+</script>
 </html>

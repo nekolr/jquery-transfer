@@ -41,9 +41,6 @@
         this.item_total_num = this.settings.dataArray.length;
         // group item total number
         this.group_item_total_num = get_group_items_num(this.settings.groupDataArray, this.settings.groupArrayName);
-        // group item total number text
-        // TODO: next step delete
-        this.group_item_total_num_text = get_total_num_text(this.default_total_num_text_template, this.group_item_total_num);
         // use group
         this.isGroup = this.group_item_total_num > 0;
         // inner data
@@ -294,9 +291,23 @@
         $(this.transferId).find(this.transferDoubleGroupListUlClass).empty();
         $(this.transferId).find(this.transferDoubleGroupListUlClass).append(this.generate_left_group_items());
 
+        $(this.transferId).find(this.transferDoubleSelectedListUlClass).empty();
+        $(this.transferId).find(this.transferDoubleSelectedListUlClass).append(this.generate_right_group_items());
+
+        var self = this;
+        var total_count = 0;
+        this._data.forEach(function(key, value) {
+            total_count += value["total_count"]
+            value["total_count"] == 0 ? $(self.transferId).find("#" + key).prop("disabled", true).prop("checked", true) : void(0)
+        })
+
         // render total num
         $(this.transferId).find(this.groupTotalNumLabelClass).empty();
-        $(this.transferId).find(this.groupTotalNumLabelClass).append(this.group_item_total_num_text);
+        $(this.transferId).find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, total_count));
+
+        // render right totol num
+        $(this.transferId).find(this.selectedTotalNumLabelClass).empty();
+        $(this.transferId).find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
     }
 
     /**
@@ -342,33 +353,38 @@
         var valueName = this.settings.valueName;
 
         for (var i = 0; i < groupDataArray.length; i++) {
-            html +=
-                '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
-                + '<div class="checkbox-group">' +
-                '<input type="checkbox" class="checkbox-normal group-select-all-' + id + '" id="group_' + i + '_' + id + '">' +
-                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupItemName] + '</label>' +
-                '</div>';
-            if (groupDataArray[i][groupArrayName].length > 0) {
+            if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
 
                 var _value = {};
                 _value["pre_selection_count"] = 0
                 _value["total_count"] = groupDataArray[i][groupArrayName].length
                 this._data.put('group_' + i + '_' + this.id, _value);
+                
+                html +=
+                '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
+                + '<div class="checkbox-group">' +
+                '<input type="checkbox" class="checkbox-normal group-select-all-' + id + '" id="group_' + i + '_' + id + '">' +
+                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupItemName] + '</label>' +
+                '</div>';
 
                 html += '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + id + '">'
                 for (var j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
-                    html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + '">' +
+
+                    var selected = groupDataArray[i][groupArrayName][j].selected || false;
+                    selected ? this.selected_total_num++ : void(0)
+                    
+                    var groupItem = this._data.get('group_' + i + '_' + this.id);
+                    selected ? groupItem["total_count"] -= 1 : void(0)
+
+                    html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
                         '<div class="checkbox-group">' +
                         '<input type="checkbox" value="' + groupDataArray[i][groupArrayName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + id + ' belongs-group-' + i + '-' + id + '" id="group_' + i + '_checkbox_' + j + '_' + id + '">' +
                         '<label for="group_' + i + '_checkbox_' + j + '_' + id + '" class="group-checkbox-name-' + id + '">' + groupDataArray[i][groupArrayName][j][itemName] + '</label>' +
                         '</div>' +
                         '</li>';
                 }
-                html += '</ul>'
-            } else {
-                html += '</li>';
-            }
-            html += '</li>';
+                html += '</ul></li>'
+            } 
         }
 
         return html;
@@ -384,7 +400,7 @@
         var valueName = this.settings.valueName;
 
         for (var i = 0; i < dataArray.length; i++) {
-            if (dataArray[i].selected) {
+            if (dataArray[i].selected || false) {
                 html += this.generate_item(this.id, i, dataArray[i][valueName], dataArray[i][itemName]);
             }
         }
@@ -393,10 +409,24 @@
 
     /**
      * generate right group items
-     * TODO: next step do it
      */
     Transfer.prototype.generate_right_group_items = function() {
+        var html = "";
+        var groupDataArray = this.settings.groupDataArray;
+        var groupArrayName = this.settings.groupArrayName;
+        var itemName = this.settings.itemName;
+        var valueName = this.settings.valueName;
 
+        for (var i = 0; i < groupDataArray.length; i++) {
+            if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
+                for (var j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
+                    if (groupDataArray[i][groupArrayName][j].selected || false) {
+                        html += this.generate_group_item(this.id, i, j, groupDataArray[i][groupArrayName][j][valueName], groupDataArray[i][groupArrayName][j][itemName]);
+                    }
+                }
+            }
+        }
+        return html;
     }
 
     /**
@@ -421,38 +451,6 @@
                 $(self.leftItemSelectAllId).prop("checked", false);
             } else if (self._data.get("pre_selection_count") == self._data.get("total_count")) {
                 $(self.leftItemSelectAllId).prop("checked", true);
-            }
-        });
-    }
-
-    /**
-     * left group checkbox item click handler
-     */
-    Transfer.prototype.left_group_checkbox_item_click_handler_old = function() {
-        var self = this;
-        $(self.transferId).on("click", self.groupCheckboxItemClass, function () {
-            var pre_selection_num = 0;
-            var pre_selection_count_map = new InnerMap();
-            self._data.forEach(function(key, value) {
-                pre_selection_count_map.put(key, value['pre_selection_count'])
-            })
-
-            for (var i = 0; i < $(self.transferId).find(self.groupCheckboxItemClass).length; i++) {
-                var groupCheckboxItems = $(self.transferId).find(self.groupCheckboxItemClass);
-                if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && groupCheckboxItems.eq(i).is(':checked')) {
-                    var id = groupCheckboxItems.eq(i).prop("id");
-                    var groupIndex = id.split("_")[1];
-                    
-                    var groupItem = self._data.get('group_' + groupIndex + '_' + self.id);
-                    groupItem["pre_selection_count"] = 
-
-                    pre_selection_num++;
-                }
-            }
-            if (pre_selection_num > 0) {
-                $(self.addSelectedButtonId).addClass("btn-arrow-active");
-            } else {
-                $(self.addSelectedButtonId).removeClass("btn-arrow-active");
             }
         });
     }
@@ -870,10 +868,10 @@
                 remain_total_count += value["total_count"];
             })
 
-            selected_total_num -= pre_selection_num;
+            this.selected_total_num -= pre_selection_num;
 
             $(this.transferId).find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, remain_total_count));
-            $(this.transferId).find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, selected_total_num));
+            $(this.transferId).find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
             if ($(this.groupItemSelectAllId).is(':checked')) {
                 $(this.groupItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
@@ -991,7 +989,7 @@
         var group_item_total_num = 0;
         for (var i = 0; i < groupDataArray.length; i++) {
             var groupItemData = groupDataArray[i][groupArrayName];
-            if (groupItemData.length > 0) {
+            if (groupItemData && groupItemData.length > 0) {
                 group_item_total_num = group_item_total_num + groupItemData.length;
             }
         }
