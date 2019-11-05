@@ -33,7 +33,7 @@
         this.rightTabNameText = "selected items";
         // search placeholder text
         this.searchPlaceholderText = "search";
-        // default total number text tempalte
+        // default total number text template
         this.default_total_num_text_template = "total: {total_num}";
         // default zero item
         this.default_right_item_total_num_text = get_total_num_text(this.default_total_num_text_template, 0);
@@ -131,7 +131,7 @@
             this.left_group_checkbox_item_click_handler();
             // group select all handler
             this.group_select_all_handler();
-            // group item select all handelr
+            // group item select all handler
             this.group_item_select_all_handler();
             // left group items search handler
             this.left_group_items_search_handler();
@@ -279,7 +279,7 @@
         $(this.transferId).find(this.totalNumLabelClass).empty();
         $(this.transferId).find(this.totalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("total_count")));
 
-        // render right totol num
+        // render right total num
         $(this.transferId).find(this.selectedTotalNumLabelClass).empty();
         $(this.transferId).find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
     }
@@ -305,7 +305,7 @@
         $(this.transferId).find(this.groupTotalNumLabelClass).empty();
         $(this.transferId).find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, total_count));
 
-        // render right totol num
+        // render right total num
         $(this.transferId).find(this.selectedTotalNumLabelClass).empty();
         $(this.transferId).find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
     }
@@ -555,7 +555,7 @@
     }
 
     /**
-     * group item select all handelr
+     * group item select all handler
      */
     Transfer.prototype.group_item_select_all_handler = function() {
         var self = this;
