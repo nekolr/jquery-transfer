@@ -152,10 +152,6 @@ body {
     font-weight: bold;
 }
 
-.transfer {
-    padding-right: 30px;
-}
-
 .icon-single-add {
     font-size: 22px;
     position: absolute;
@@ -171,12 +167,10 @@ body {
 }
 
 .transfer-double {
-    width: 638px;
+    width: 640px;
     height: 390px;
     background-color: #fff;
     border: 1px solid #ddd;
-    position: absolute;
-    left: 30%;
     z-index: 1000;
     border-radius: 2px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
