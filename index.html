@@ -66,7 +66,7 @@
         }
     };
 
-    $("#transfer1").Transfer(settings1);
+    $("#transfer1").transfer(settings1);
 </script>
 
 <script>
@@ -113,7 +113,7 @@
         }
     };
 
-    $("#transfer2").Transfer(settings2);
+    $("#transfer2").transfer(settings2);
 </script>
 
 <script>
@@ -169,7 +169,7 @@
         }
     };
 
-    $("#transfer3").Transfer(settings3);
+    $("#transfer3").transfer(settings3);
 </script>
 
 <script>
@@ -229,6 +229,8 @@ var groupDataArray2 = [
         }
     };
 
-    $("#transfer4").Transfer(settings4);
+    var transfer = $("#transfer4").transfer(settings4);
+    // get selected items
+    transfer.getSelectedItems()
 </script>
 </html>

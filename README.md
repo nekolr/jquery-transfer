@@ -61,9 +61,7 @@ var settings = {
     }
 };
 
-var transfer = $(".transfer").Transfer(settings);
-// get selected items
-transfer.getSelectedItems();
+$(".transfer").transfer(settings);
 ```
 
 ## no grouping
@@ -89,7 +87,5 @@ var settings = {
     }
 };
 
-var transfer = $(".transfer").Transfer(settings);
-// get selected items
-transfer.getSelectedItems();
+$(".transfer").transfer(settings);
 ```
