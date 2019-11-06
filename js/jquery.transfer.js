@@ -109,11 +109,6 @@
         var transfer = new Transfer(this, options);
         // init
         transfer.init();
-
-        return {
-            // get selected items
-            getSelectedItems: transfer.get_selected_items
-        }
     }
 
     /**
