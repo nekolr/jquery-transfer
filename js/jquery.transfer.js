@@ -537,12 +537,12 @@
                 }
             } else {
                 for (var j = 0; j < groups.length; j++) {
-                    if (groups.eq(j).is(':checked') && groups.eq(i).parent("div").parent("li").css("display") != "none") {
+                    if (groups.eq(j).is(':checked') && groups.eq(j).parent("div").parent("li").css("display") != "none") {
                         groups.eq(j).prop("checked", false);
                     }
                 }
 
-                var groupItem = self._data.get($(this).prop("id"))["pre_selection_count"] = 0;
+                self._data.get($(this).prop("id"))["pre_selection_count"] = 0;
 
                 var groupCheckedNum = 0;
                 groupSelectAllArray.each(function () {
@@ -550,10 +550,15 @@
                         groupCheckedNum = groupCheckedNum + 1;
                     }
                 });
+                // TODO: enhancement
+                var pre_selection_count = 0;
+                self._data.forEach(function(key, value) {
+                    pre_selection_count += value["pre_selection_count"]
+                })
                 if (groupCheckedNum != groupSelectAllArray.length) {
                     $(self.groupItemSelectAllId).prop("checked", false);
                 }
-                if (groupCheckedNum == 0) {
+                if (pre_selection_count == 0) {
                     $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 }
             }
