@@ -512,7 +512,9 @@
             // group index
             var groupIndex = ($(this).attr("id")).split("_")[1];
             var groups =  self.$element.find(".belongs-group-" + groupIndex + "-" + self.id);
-            var groupSelectAllArray = self.$element.find(self.groupSelectAllClass);
+            var pre_selection_count = 0;
+            var total_count = 0;
+
             // a group is checked
             if ($(this).is(':checked')) {
                 // active button
@@ -526,13 +528,12 @@
                 var groupItem = self._data.get($(this).prop("id"));
                 groupItem["pre_selection_count"] = groupItem["total_count"];
 
-                var groupCheckedNum = 0;
-                groupSelectAllArray.each(function () {
-                    if ($(this).is(":checked")) {
-                        groupCheckedNum = groupCheckedNum + 1;
-                    }
-                });
-                if (groupCheckedNum == groupSelectAllArray.length) {
+                self._data.forEach(function(key, value) {
+                    pre_selection_count += value["pre_selection_count"];
+                    total_count += value["total_count"];
+                })
+
+                if (pre_selection_count == total_count) {
                     $(self.groupItemSelectAllId).prop("checked", true);
                 }
             } else {
@@ -544,20 +545,15 @@
 
                 self._data.get($(this).prop("id"))["pre_selection_count"] = 0;
 
-                var groupCheckedNum = 0;
-                groupSelectAllArray.each(function () {
-                    if ($(this).is(":checked")) {
-                        groupCheckedNum = groupCheckedNum + 1;
-                    }
-                });
-                // TODO: enhancement
-                var pre_selection_count = 0;
                 self._data.forEach(function(key, value) {
-                    pre_selection_count += value["pre_selection_count"]
+                    pre_selection_count += value["pre_selection_count"];
+                    total_count += value["total_count"];
                 })
-                if (groupCheckedNum != groupSelectAllArray.length) {
+                
+                if (pre_selection_count != total_count) {
                     $(self.groupItemSelectAllId).prop("checked", false);
                 }
+                
                 if (pre_selection_count == 0) {
                     $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 }
