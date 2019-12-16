@@ -3,7 +3,7 @@
  */
 ;(function($) {
 
-    var Transfer = function(element, options) {
+    let Transfer = function(element, options) {
         this.$element = element;
         // default options
         this.defaults = {
@@ -26,15 +26,15 @@
         // The total number of selected items
         this.selected_total_num = 0;
         // tab text
-        this.tabNameText = "items";
+        this.tabNameText = this.settings.tabNameText;
         // group tab text
         this.groupTabNameText = "group items";
         // right tab text
-        this.rightTabNameText = "selected items";
+        this.rightTabNameText = this.settings.rightTabNameText;
         // search placeholder text
-        this.searchPlaceholderText = "search";
+        this.searchPlaceholderText = "Ara";
         // default total number text template
-        this.default_total_num_text_template = "total: {total_num}";
+        this.default_total_num_text_template = "Toplam: {total_num}";
         // default zero item
         this.default_right_item_total_num_text = get_total_num_text(this.default_total_num_text_template, 0);
         // item total number
@@ -94,17 +94,17 @@
         // id selector for the right item select all
         // TODO: next step use it
         this.rightItemSelectAllId = "#rightItemSelectAll_" + this.id;
-        // class selector for the 
+        // class selector for the
         this.selectedTotalNumLabelClass = ".selected_total_num_" + this.id;
         // id selector for the add button
         this.addSelectedButtonId = "#add_selected_" + this.id;
         // id selector for the delete button
         this.deleteSelectedButtonId = "#delete_selected_" + this.id;
     }
-    
+
     $.fn.transfer = function(options) {
         // new Transfer
-        var transfer = new Transfer(this, options);
+        let transfer = new Transfer(this, options);
         // init
         transfer.init();
 
@@ -162,7 +162,7 @@
      * generate transfer
      */
     Transfer.prototype.generate_transfer = function() {
-        var html =
+        let html =
             '<div class="transfer-double" id="transfer_double_' + this.id + '">'
             + '<div class="transfer-double-header"></div>'
             + '<div class="transfer-double-content clearfix">'
@@ -297,8 +297,8 @@
         this.$element.find(this.transferDoubleSelectedListUlClass).empty();
         this.$element.find(this.transferDoubleSelectedListUlClass).append(this.generate_right_group_items());
 
-        var self = this;
-        var total_count = 0;
+        let self = this;
+        let total_count = 0;
         this._data.forEach(function(key, value) {
             total_count += value["total_count"]
             value["total_count"] == 0 ? self.$element.find("#" + key).prop("disabled", true).prop("checked", true) : void(0)
@@ -320,20 +320,20 @@
      * generate left items
      */
     Transfer.prototype.generate_left_items = function() {
-        var html = "";
-        var dataArray = this.settings.dataArray;
-        var itemName = this.settings.itemName;
-        var valueName = this.settings.valueName;
+        let html = "";
+        let dataArray = this.settings.dataArray;
+        let itemName = this.settings.itemName;
+        let valueName = this.settings.valueName;
 
-        for (var i = 0; i < dataArray.length; i++) {
+        for (let i = 0; i < dataArray.length; i++) {
 
-            var selected = dataArray[i].selected || false;
+            let selected = dataArray[i].selected || false;
             selected ? this.selected_total_num++ : void(0)
 
             html +=
             '<li class="transfer-double-list-li transfer-double-list-li-' + this.id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
             '<div class="checkbox-group">' +
-            '<input type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-' 
+            '<input type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-'
             + this.id + '" id="itemCheckbox_' + i + '_' + this.id + '">' +
             '<label class="checkbox-name-' + this.id + '" for="itemCheckbox_' + i + '_' + this.id + '">' + dataArray[i][itemName] + '</label>' +
             '</div>' +
@@ -350,22 +350,23 @@
      * render left group items
      */
     Transfer.prototype.generate_left_group_items = function() {
-        var html = "";
-        var id = this.id;
-        var groupDataArray = this.settings.groupDataArray;
-        var groupItemName = this.settings.groupItemName;
-        var groupArrayName = this.settings.groupArrayName;
-        var itemName = this.settings.itemName;
-        var valueName = this.settings.valueName;
+        let html = "";
+        let id = this.id;
+        let groupDataArray = this.settings.groupDataArray;
+        let groupItemName = this.settings.groupItemName;
+        let groupArrayName = this.settings.groupArrayName;
+        let itemName = this.settings.itemName;
+        let valueName = this.settings.valueName;
 
-        for (var i = 0; i < groupDataArray.length; i++) {
+
+        for (let i = 0; i < groupDataArray.length; i++) {
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
 
-                var _value = {};
+                let _value = {};
                 _value["pre_selection_count"] = 0
                 _value["total_count"] = groupDataArray[i][groupArrayName].length
                 this._data.put('group_' + i + '_' + this.id, _value);
-                
+
                 html +=
                 '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
                 + '<div class="checkbox-group">' +
@@ -374,12 +375,12 @@
                 '</div>';
 
                 html += '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + id + '">'
-                for (var j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
+                for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
 
-                    var selected = groupDataArray[i][groupArrayName][j].selected || false;
+                    let selected = groupDataArray[i][groupArrayName][j].selected || false;
                     selected ? this.selected_total_num++ : void(0)
-                    
-                    var groupItem = this._data.get('group_' + i + '_' + this.id);
+
+                    let groupItem = this._data.get('group_' + i + '_' + this.id);
                     selected ? groupItem["total_count"] -= 1 : void(0)
 
                     html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
@@ -390,7 +391,7 @@
                         '</li>';
                 }
                 html += '</ul></li>'
-            } 
+            }
         }
 
         return html;
@@ -400,12 +401,13 @@
      * generate right items
      */
     Transfer.prototype.generate_right_items = function() {
-        var html = "";
-        var dataArray = this.settings.dataArray;
-        var itemName = this.settings.itemName;
-        var valueName = this.settings.valueName;
+        let html = "";
+        let dataArray = this.settings.dataArray;
+        let itemName = this.settings.itemName;
+        let valueName = this.settings.valueName;
 
-        for (var i = 0; i < dataArray.length; i++) {
+
+        for (let i = 0; i < dataArray.length; i++) {
             if (dataArray[i].selected || false) {
                 html += this.generate_item(this.id, i, dataArray[i][valueName], dataArray[i][itemName]);
             }
@@ -417,15 +419,15 @@
      * generate right group items
      */
     Transfer.prototype.generate_right_group_items = function() {
-        var html = "";
-        var groupDataArray = this.settings.groupDataArray;
-        var groupArrayName = this.settings.groupArrayName;
-        var itemName = this.settings.itemName;
-        var valueName = this.settings.valueName;
+        let html = "";
+        let groupDataArray = this.settings.groupDataArray;
+        let groupArrayName = this.settings.groupArrayName;
+        let itemName = this.settings.itemName;
+        let valueName = this.settings.valueName;
 
-        for (var i = 0; i < groupDataArray.length; i++) {
+        for (let i = 0; i < groupDataArray.length; i++) {
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
-                for (var j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
+                for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
                     if (groupDataArray[i][groupArrayName][j].selected || false) {
                         html += this.generate_group_item(this.id, i, j, groupDataArray[i][groupArrayName][j][valueName], groupDataArray[i][groupArrayName][j][itemName]);
                     }
@@ -439,12 +441,12 @@
      * left checkbox item click handler
      */
     Transfer.prototype.left_checkbox_item_click_handler = function() {
-        var self = this;
+        let self = this;
         self.$element.on("click", self.checkboxItemClass, function () {
-            var pre_selection_num = 0;
+            let pre_selection_num = 0;
             $(this).is(":checked") ? pre_selection_num++ : pre_selection_num--
 
-            var pre_selection_count = self._data.get("pre_selection_count");
+            let pre_selection_count = self._data.get("pre_selection_count");
             self._data.put("pre_selection_count", pre_selection_count + pre_selection_num);
 
             if (self._data.get("pre_selection_count") > 0) {
@@ -465,17 +467,17 @@
      * left group checkbox item click handler
      */
     Transfer.prototype.left_group_checkbox_item_click_handler = function() {
-        var self = this;
+        let self = this;
         self.$element.on("click", self.groupCheckboxItemClass, function () {
-            var pre_selection_num = 0;
-            var total_pre_selection_num = 0;
-            var remain_total_count = 0
+            let pre_selection_num = 0;
+            let total_pre_selection_num = 0;
+            let remain_total_count = 0
 
             $(this).is(":checked") ? pre_selection_num++ : pre_selection_num--
 
-            var groupIndex = $(this).prop("id").split("_")[1];
-            var groupItem =  self._data.get('group_' + groupIndex + '_' + self.id);
-            var pre_selection_count = groupItem["pre_selection_count"];
+            let groupIndex = $(this).prop("id").split("_")[1];
+            let groupItem =  self._data.get('group_' + groupIndex + '_' + self.id);
+            let pre_selection_count = groupItem["pre_selection_count"];
             groupItem["pre_selection_count"] = pre_selection_count + pre_selection_num
 
             self._data.forEach(function(key, value) {
@@ -507,25 +509,25 @@
      * group select all handler
      */
     Transfer.prototype.group_select_all_handler = function() {
-        var self = this;
+        let self = this;
         $(self.groupSelectAllClass).on("click", function () {
             // group index
-            var groupIndex = ($(this).attr("id")).split("_")[1];
-            var groups =  self.$element.find(".belongs-group-" + groupIndex + "-" + self.id);
-            var pre_selection_count = 0;
-            var total_count = 0;
+            let groupIndex = ($(this).attr("id")).split("_")[1];
+            let groups =  self.$element.find(".belongs-group-" + groupIndex + "-" + self.id);
+            let pre_selection_count = 0;
+            let total_count = 0;
 
             // a group is checked
             if ($(this).is(':checked')) {
                 // active button
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
-                for (var i = 0; i < groups.length; i++) {
+                for (let i = 0; i < groups.length; i++) {
                     if (!groups.eq(i).is(':checked') && groups.eq(i).parent("div").parent("li").css("display") != "none") {
                         groups.eq(i).prop("checked", true);
                     }
                 }
 
-                var groupItem = self._data.get($(this).prop("id"));
+                let groupItem = self._data.get($(this).prop("id"));
                 groupItem["pre_selection_count"] = groupItem["total_count"];
 
                 self._data.forEach(function(key, value) {
@@ -537,7 +539,7 @@
                     $(self.groupItemSelectAllId).prop("checked", true);
                 }
             } else {
-                for (var j = 0; j < groups.length; j++) {
+                for (let j = 0; j < groups.length; j++) {
                     if (groups.eq(j).is(':checked') && groups.eq(j).parent("div").parent("li").css("display") != "none") {
                         groups.eq(j).prop("checked", false);
                     }
@@ -549,11 +551,11 @@
                     pre_selection_count += value["pre_selection_count"];
                     total_count += value["total_count"];
                 })
-                
+
                 if (pre_selection_count != total_count) {
                     $(self.groupItemSelectAllId).prop("checked", false);
                 }
-                
+
                 if (pre_selection_count == 0) {
                     $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 }
@@ -565,11 +567,11 @@
      * group item select all handler
      */
     Transfer.prototype.group_item_select_all_handler = function() {
-        var self = this;
+        let self = this;
         $(self.groupItemSelectAllId).on("click", function () {
-            var groupCheckboxItems = self.$element.find(self.groupCheckboxItemClass);
+            let groupCheckboxItems = self.$element.find(self.groupCheckboxItemClass);
             if ($(this).is(':checked')) {
-                for (var i = 0; i < groupCheckboxItems.length; i++) {
+                for (let i = 0; i < groupCheckboxItems.length; i++) {
                     if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && !groupCheckboxItems.eq(i).is(':checked')) {
                         groupCheckboxItems.eq(i).prop("checked", true);
                     }
@@ -584,7 +586,7 @@
 
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
             } else {
-                for (var i = 0; i < groupCheckboxItems.length; i++) {
+                for (let i = 0; i < groupCheckboxItems.length; i++) {
                     if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && groupCheckboxItems.eq(i).is(':checked')) {
                         groupCheckboxItems.eq(i).prop("checked", false);
                     }
@@ -606,12 +608,12 @@
      * left group items search handler
      */
     Transfer.prototype.left_group_items_search_handler = function() {
-        var self = this;
+        let self = this;
         $(self.groupItemSearcherId).on("keyup", function () {
             self.$element.find(self.transferDoubleGroupListUlClass).css('display', 'block');
-            var transferDoubleGroupListLiUlLis = self.$element.find(self.transferDoubleGroupListLiUlLiClass);
+            let transferDoubleGroupListLiUlLis = self.$element.find(self.transferDoubleGroupListLiUlLiClass);
             if ($(self.groupItemSearcherId).val() == "") {
-                for (var i = 0; i < transferDoubleGroupListLiUlLis.length; i++) {
+                for (let i = 0; i < transferDoubleGroupListLiUlLis.length; i++) {
                     if (!transferDoubleGroupListLiUlLis.eq(i).hasClass("selected-hidden")) {
                         transferDoubleGroupListLiUlLis.eq(i).parent("ul").parent("li").css('display', 'block');
                         transferDoubleGroupListLiUlLis.eq(i).css('display', 'block');
@@ -626,7 +628,7 @@
             self.$element.find(self.transferDoubleGroupListLiClass).css('display', 'none');
             transferDoubleGroupListLiUlLis.css('display', 'none');
 
-            for (var j = 0; j < transferDoubleGroupListLiUlLis.length; j++) {
+            for (let j = 0; j < transferDoubleGroupListLiUlLis.length; j++) {
                 if (!transferDoubleGroupListLiUlLis.eq(j).hasClass("selected-hidden")
                     && transferDoubleGroupListLiUlLis.eq(j).text()
                         .substr(0, $(self.groupItemSearcherId).val().length).toLowerCase() == $(self.groupItemSearcherId).val().toLowerCase()) {
@@ -641,11 +643,11 @@
      * left item select all handler
      */
     Transfer.prototype.left_item_select_all_handler = function() {
-        var self = this;
+        let self = this;
         $(self.leftItemSelectAllId).on("click", function () {
-            var checkboxItems = self.$element.find(self.checkboxItemClass);
+            let checkboxItems = self.$element.find(self.checkboxItemClass);
             if ($(this).is(':checked')) {
-                for (var i = 0; i < checkboxItems.length; i++) {
+                for (let i = 0; i < checkboxItems.length; i++) {
                     if (checkboxItems.eq(i).parent("div").parent("li").css('display') != "none" && !checkboxItems.eq(i).is(':checked')) {
                         checkboxItems.eq(i).prop("checked", true);
                     }
@@ -653,7 +655,7 @@
                 self._data.put("pre_selection_count", self._data.get("total_count"));
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
             } else {
-                for (var i = 0; i < checkboxItems.length; i++) {
+                for (let i = 0; i < checkboxItems.length; i++) {
                     if (checkboxItems.eq(i).parent("div").parent("li").css('display') != "none" && checkboxItems.eq(i).is(':checked')) {
                         checkboxItems.eq(i).prop("checked", false);
                     }
@@ -668,12 +670,12 @@
      * left items search handler
      */
     Transfer.prototype.left_items_search_handler = function() {
-        var self = this;
+        let self = this;
         $(self.itemSearcherId).on("keyup", function () {
-            var transferDoubleListLis = self.$element.find(self.transferDoubleListLiClass);
+            let transferDoubleListLis = self.$element.find(self.transferDoubleListLiClass);
             self.$element.find(self.transferDoubleListUlClass).css('display', 'block');
             if ($(self.itemSearcherId).val() == "") {
-                for (var i = 0; i < transferDoubleListLis.length; i++) {
+                for (let i = 0; i < transferDoubleListLis.length; i++) {
                     if (!transferDoubleListLis.eq(i).hasClass("selected-hidden")) {
                         self.$element.find(self.transferDoubleListLiClass).eq(i).css('display', 'block');
                     }
@@ -683,7 +685,7 @@
 
             transferDoubleListLis.css('display', 'none');
 
-            for (var j = 0; j < transferDoubleListLis.length; j++) {
+            for (let j = 0; j < transferDoubleListLis.length; j++) {
                 if (!transferDoubleListLis.eq(j).hasClass("selected-hidden")
                     && transferDoubleListLis.eq(j).text()
                         .substr(0, $(self.itemSearcherId).val().length).toLowerCase() == $(self.itemSearcherId).val().toLowerCase()) {
@@ -697,10 +699,10 @@
      * right checkbox item click handler
      */
     Transfer.prototype.right_checkbox_item_click_handler = function() {
-        var self = this;
+        let self = this;
         self.$element.on("click", self.checkboxSelectedItemClass, function () {
-            var pre_selection_num = 0;
-            for (var i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length; i++) {
+            let pre_selection_num = 0;
+            for (let i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length; i++) {
                 if (self.$element.find(self.checkboxSelectedItemClass).eq(i).is(':checked')) {
                     pre_selection_num++;
                 }
@@ -717,7 +719,7 @@
      * move the pre-selection items to the right handler
      */
     Transfer.prototype.move_pre_selection_items_handler = function() {
-        var self = this;
+        let self = this;
         $(self.addSelectedButtonId).on("click", function () {
             self.isGroup ? self.move_pre_selection_group_items() : self.move_pre_selection_items()
             // callable
@@ -729,44 +731,44 @@
      * move the pre-selection group items to the right
      */
     Transfer.prototype.move_pre_selection_group_items = function() {
-        var pre_selection_num = 0;
-        var html = "";
-        var groupCheckboxItems = this.$element.find(this.groupCheckboxItemClass);
-        for (var i = 0; i < groupCheckboxItems.length; i++) {
+        let pre_selection_num = 0;
+        let html = "";
+        let groupCheckboxItems = this.$element.find(this.groupCheckboxItemClass);
+        for (let i = 0; i < groupCheckboxItems.length; i++) {
             if (!groupCheckboxItems.eq(i).parent("div").parent("li").hasClass("selected-hidden") && groupCheckboxItems.eq(i).is(':checked')) {
-                var checkboxItemId = groupCheckboxItems.eq(i).attr("id");
-                var groupIndex = checkboxItemId.split("_")[1];
-                var itemIndex = checkboxItemId.split("_")[3];
-                var labelText = this.$element.find(this.groupCheckboxNameLabelClass).eq(i).text();
-                var value = groupCheckboxItems.eq(i).val();
-                
+                let checkboxItemId = groupCheckboxItems.eq(i).attr("id");
+                let groupIndex = checkboxItemId.split("_")[1];
+                let itemIndex = checkboxItemId.split("_")[3];
+                let labelText = this.$element.find(this.groupCheckboxNameLabelClass).eq(i).text();
+                let value = groupCheckboxItems.eq(i).val();
+
                 html += this.generate_group_item(this.id, groupIndex, itemIndex, value, labelText);
                 groupCheckboxItems.parent("div").parent("li").eq(i).css("display", "").addClass("selected-hidden");
                 pre_selection_num++;
 
-                var groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
-                var total_count = groupItem["total_count"];
-                var pre_selection_count = groupItem["pre_selection_count"];
+                let groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
+                let total_count = groupItem["total_count"];
+                let pre_selection_count = groupItem["pre_selection_count"];
                 groupItem["total_count"] = --total_count;
                 groupItem["pre_selection_count"] = --pre_selection_count;
             }
         }
 
         if (pre_selection_num > 0) {
-            var groupSelectAllArray = this.$element.find(this.groupSelectAllClass);
-            for (var j = 0; j < groupSelectAllArray.length; j++) {
+            let groupSelectAllArray = this.$element.find(this.groupSelectAllClass);
+            for (let j = 0; j < groupSelectAllArray.length; j++) {
                 if (groupSelectAllArray.eq(j).is(":checked")) {
                     groupSelectAllArray.eq(j).prop("disabled", "disabled");
                 }
             }
 
-            var remain_total_count = 0;
+            let remain_total_count = 0;
             this._data.forEach(function(key, value) {
                 remain_total_count += value["total_count"];
             })
             this.selected_total_num = this.group_item_total_num - remain_total_count;
 
-            var groupTotalNumLabel = this.$element.find(this.groupTotalNumLabelClass);
+            let groupTotalNumLabel = this.$element.find(this.groupTotalNumLabelClass);
             groupTotalNumLabel.empty();
             groupTotalNumLabel.append(get_total_num_text(this.default_total_num_text_template, remain_total_count));
             this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
@@ -774,9 +776,9 @@
             if (remain_total_count == 0) {
                 $(this.groupItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
             }
-    
+
             $(this.addSelectedButtonId).removeClass("btn-arrow-active");
-            var transferDoubleSelectedListUl = this.$element.find(this.transferDoubleSelectedListUlClass);
+            let transferDoubleSelectedListUl = this.$element.find(this.transferDoubleSelectedListUlClass);
             transferDoubleSelectedListUl.append(html);
         }
     }
@@ -785,29 +787,29 @@
      * move the pre-selection items to the right
      */
     Transfer.prototype.move_pre_selection_items = function() {
-        var pre_selection_num = 0;
-        var html = "";
-        var self = this;
-        var checkboxItems = self.$element.find(self.checkboxItemClass);
-        for (var i = 0; i < checkboxItems.length; i++) {
+        let pre_selection_num = 0;
+        let html = "";
+        let self = this;
+        let checkboxItems = self.$element.find(self.checkboxItemClass);
+        for (let i = 0; i < checkboxItems.length; i++) {
             if (checkboxItems.eq(i).parent("div").parent("li").css("display") != "none" && checkboxItems.eq(i).is(':checked')) {
-                var checkboxItemId = checkboxItems.eq(i).attr("id");
+                let checkboxItemId = checkboxItems.eq(i).attr("id");
                 // checkbox item index
-                var index = checkboxItemId.split("_")[1];
-                var labelText = self.$element.find(self.checkboxItemLabelClass).eq(i).text();
-                var value = checkboxItems.eq(i).val();
+                let index = checkboxItemId.split("_")[1];
+                let labelText = self.$element.find(self.checkboxItemLabelClass).eq(i).text();
+                let value = checkboxItems.eq(i).val();
                 self.$element.find(self.transferDoubleListLiClass).eq(i).css("display", "").addClass("selected-hidden");
                 html += self.generate_item(self.id, index, value, labelText);
                 pre_selection_num++;
 
-                var pre_selection_count = self._data.get("pre_selection_count");
-                var total_count = self._data.get("total_count");
+                let pre_selection_count = self._data.get("pre_selection_count");
+                let total_count = self._data.get("total_count");
                 self._data.put("pre_selection_count", --pre_selection_count);
                 self._data.put("total_count", --total_count);
             }
         }
         if (pre_selection_num > 0) {
-            var totalNumLabel = self.$element.find(self.totalNumLabelClass);
+            let totalNumLabel = self.$element.find(self.totalNumLabelClass);
             totalNumLabel.empty();
 
             self.selected_total_num += pre_selection_num
@@ -826,8 +828,11 @@
      * move the selected item to the left handler
      */
     Transfer.prototype.move_selected_items_handler = function() {
-        var self = this;
+        let self = this;
         $(self.deleteSelectedButtonId).on("click", function () {
+
+            console.log(self);
+
             self.isGroup ? self.move_selected_group_items() : self.move_selected_items()
             $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
             // callable
@@ -839,14 +844,14 @@
      * move the selected group item to the left
      */
     Transfer.prototype.move_selected_group_items = function() {
-        var pre_selection_num = 0;
-        var checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
-        for (var i = 0; i < checkboxSelectedItems.length;) {
-            var another_checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
+        let pre_selection_num = 0;
+        let checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
+        for (let i = 0; i < checkboxSelectedItems.length;) {
+            let another_checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
             if (another_checkboxSelectedItems.eq(i).is(':checked')) {
-                var checkboxSelectedItemId = another_checkboxSelectedItems.eq(i).attr("id");
-                var groupIndex = checkboxSelectedItemId.split("_")[1];
-                var index = checkboxSelectedItemId.split("_")[3];
+                let checkboxSelectedItemId = another_checkboxSelectedItems.eq(i).attr("id");
+                let groupIndex = checkboxSelectedItemId.split("_")[1];
+                let index = checkboxSelectedItemId.split("_")[3];
 
                 another_checkboxSelectedItems.parent("div").parent("li").eq(i).remove();
                 this.$element.find("#group_" + groupIndex + "_" + this.id).prop("checked", false).removeAttr("disabled");
@@ -855,8 +860,8 @@
 
                 pre_selection_num++;
 
-                var groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
-                var total_count = groupItem["total_count"];
+                let groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
+                let total_count = groupItem["total_count"];
                 groupItem["total_count"] = ++total_count;
 
             } else {
@@ -866,7 +871,7 @@
         if (pre_selection_num > 0) {
             this.$element.find(this.groupTotalNumLabelClass).empty();
 
-            var remain_total_count = 0;
+            let remain_total_count = 0;
             this._data.forEach(function(key, value) {
                 remain_total_count += value["total_count"];
             })
@@ -885,25 +890,28 @@
      * move the selected item to the left
      */
     Transfer.prototype.move_selected_items = function() {
-        var pre_selection_num = 0;
-        var self = this;
-        for (var i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length;) {
-            var checkboxSelectedItems = self.$element.find(self.checkboxSelectedItemClass);
+        let pre_selection_num = 0;
+        let self = this;
+
+        for (let i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length;) {
+            let checkboxSelectedItems = self.$element.find(self.checkboxSelectedItemClass);
             if (checkboxSelectedItems.eq(i).is(':checked')) {
-                var index = checkboxSelectedItems.eq(i).attr("id").split("_")[1];
+                let index = checkboxSelectedItems.eq(i).attr("id").split("_")[1];
                 checkboxSelectedItems.parent("div").parent("li").eq(i).remove();
                 self.$element.find(self.checkboxItemClass).eq(index).prop("checked", false);
                 self.$element.find(self.transferDoubleListLiClass).eq(index).css("display", "").removeClass("selected-hidden");
 
                 pre_selection_num++;
 
-                var total_count = self._data.get("total_count");
+                let total_count = self._data.get("total_count");
                 self._data.put("total_count", ++total_count);
+
 
             } else {
                 i++;
             }
         }
+
 
         if (pre_selection_num > 0) {
             self.$element.find(self.totalNumLabelClass).empty();
@@ -920,9 +928,9 @@
      * right items search handler
      */
     Transfer.prototype.right_items_search_handler = function() {
-        var self = this;
+        let self = this;
         $(self.selectedItemSearcherId).keyup(function () {
-            var transferDoubleSelectedListLis = self.$element.find(self.transferDoubleSelectedListLiClass);
+            let transferDoubleSelectedListLis = self.$element.find(self.transferDoubleSelectedListLiClass);
             self.$element.find(self.transferDoubleSelectedListUlClass).css('display', 'block');
 
             if ($(self.selectedItemSearcherId).val() == "") {
@@ -932,7 +940,7 @@
 
             transferDoubleSelectedListLis.css('display', 'none');
 
-            for (var i = 0; i < transferDoubleSelectedListLis.length; i++) {
+            for (let i = 0; i < transferDoubleSelectedListLis.length; i++) {
                 if (transferDoubleSelectedListLis.eq(i).text()
                         .substr(0, $(self.selectedItemSearcherId).val().length).toLowerCase() == $(self.selectedItemSearcherId).val().toLowerCase()) {
                             transferDoubleSelectedListLis.eq(i).css('display', 'block');
@@ -970,7 +978,7 @@
      */
     function applyCallable(transfer) {
         if (Object.prototype.toString.call(transfer.settings.callable) === "[object Function]") {
-            var selected_items = get_selected_items(transfer);
+            let selected_items = get_selected_items(transfer);
             if (selected_items.length > 0) {
                 transfer.settings.callable.call(transfer, selected_items);
             }
@@ -981,12 +989,12 @@
      * get selected items
      */
     function get_selected_items(transfer) {
-        var selected = [];
-        var transferDoubleSelectedListLiArray = transfer.$element.find(transfer.transferDoubleSelectedListLiClass);
-        for (var i = 0; i < transferDoubleSelectedListLiArray.length; i++) {
-            var checkboxGroup = transferDoubleSelectedListLiArray.eq(i).find(".checkbox-group");
+        let selected = [];
+        let transferDoubleSelectedListLiArray = transfer.$element.find(transfer.transferDoubleSelectedListLiClass);
+        for (let i = 0; i < transferDoubleSelectedListLiArray.length; i++) {
+            let checkboxGroup = transferDoubleSelectedListLiArray.eq(i).find(".checkbox-group");
 
-            var item = {};
+            let item = {};
             item[transfer.settings.itemName] = checkboxGroup.find("label").text();
             item[transfer.settings.valueName] = checkboxGroup.find("input").val();
             selected.push(item);
@@ -996,13 +1004,13 @@
 
     /**
      * get group items number
-     * @param {Array} groupDataArray 
-     * @param {string}  groupArrayName 
+     * @param {Array} groupDataArray
+     * @param {string}  groupArrayName
      */
     function get_group_items_num(groupDataArray, groupArrayName) {
-        var group_item_total_num = 0;
-        for (var i = 0; i < groupDataArray.length; i++) {
-            var groupItemData = groupDataArray[i][groupArrayName];
+        let group_item_total_num = 0;
+        for (let i = 0; i < groupDataArray.length; i++) {
+            let groupItemData = groupDataArray[i][groupArrayName];
             if (groupItemData && groupItemData.length > 0) {
                 group_item_total_num = group_item_total_num + groupItemData.length;
             }
@@ -1012,11 +1020,11 @@
 
     /**
      * get the total number by replacing the template
-     * @param {*} template 
-     * @param {*} total_num 
+     * @param {*} template
+     * @param {*} total_num
      */
     function get_total_num_text(template, total_num) {
-        var _template = template;
+        let _template = template;
         return _template.replace(/{total_num}/g, total_num);
     }
 
@@ -1037,7 +1045,7 @@
             return this.values[key];
         }
         this.remove = function(key) {
-            for (var i = 0; i < this.keys.length; i++) {
+            for (let i = 0; i < this.keys.length; i++) {
                 if (this.keys[i] === key) {
                     this.keys.splice(i, 1);
                 }
@@ -1045,9 +1053,9 @@
             delete this.values[key];
         }
         this.forEach = function(fn) {
-            for (var i = 0; i < this.keys.length; i++) {
-                var key = this.keys[i];
-                var value = this.values[key];
+            for (let i = 0; i < this.keys.length; i++) {
+                let key = this.keys[i];
+                let value = this.values[key];
                 fn(key, value);
             }
         }
@@ -1063,9 +1071,9 @@
      * get id
      */
     function getId() {
-        var counter = 0;
+        let counter = 0;
         return function(prefix) {
-            var id = (+new Date()).toString(32), i = 0;
+            let id = (+new Date()).toString(32), i = 0;
             for (; i < 5; i++) {
                 id += Math.floor(Math.random() * 65535).toString(32);
             }
