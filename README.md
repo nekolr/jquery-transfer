@@ -23,6 +23,10 @@ A jQuery plugin that is a shuttle box.
 | groupItemName | The name of each group in the data | string | groupItem |
 | groupArrayName | The name of the data array for each group | string | groupArray |
 | valueName | The value name of each item in the data | string | value |
+| tabNameText | The left tab text | string | items |
+| rightTabNameText | The right tab text | string | selected items |
+| searchPlaceholderText | The searcher's placeholder text | string | search |
+| totalText | The total text | string | total |
 | dataArray | items data array | array |  |
 | groupDataArray | grouping item data array | array |  |
 

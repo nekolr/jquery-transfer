@@ -15,6 +15,14 @@
             groupArrayName: "groupArray",
             // data value name
             valueName: "value",
+            // tab text
+            tabNameText: "items",
+            // right tab text
+            rightTabNameText: "selected items",
+            // search placeholder text
+            searchPlaceholderText: "search",
+            // total text
+            totalText: "total",
             // items data array
             dataArray: [],
             // group data array
@@ -27,14 +35,12 @@
         this.selected_total_num = 0;
         // tab text
         this.tabNameText = this.settings.tabNameText;
-        // group tab text
-        this.groupTabNameText = "group items";
         // right tab text
         this.rightTabNameText = this.settings.rightTabNameText;
         // search placeholder text
-        this.searchPlaceholderText = "Ara";
+        this.searchPlaceholderText = this.settings.searchPlaceholderText;
         // default total number text template
-        this.default_total_num_text_template = "Toplam: {total_num}";
+        this.default_total_num_text_template = this.settings.totalText + ": {total_num}";
         // default zero item
         this.default_right_item_total_num_text = get_total_num_text(this.default_total_num_text_template, 0);
         // item total number
@@ -184,7 +190,7 @@
     Transfer.prototype.generate_left_part = function() {
         return '<div class="transfer-double-content-left">'
         + '<div class="transfer-double-content-param">'
-        + '<div class="param-item">' + (this.isGroup ? this.groupTabNameText : this.tabNameText) + '</div>'
+        + '<div class="param-item">' + (this.isGroup ? this.tabNameText : this.tabNameText) + '</div>'
         + '</div>'
         + (this.isGroup ? this.generate_group_items_container() : this.generate_items_container())
         + '</div>'
