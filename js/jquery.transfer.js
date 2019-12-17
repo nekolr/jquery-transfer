@@ -665,7 +665,7 @@
 
             for (let j = 0; j < transferDoubleGroupListLiUlLis.length; j++) {
                 if (!transferDoubleGroupListLiUlLis.eq(j).hasClass("selected-hidden")
-                    && transferDoubleGroupListLiUlLis.eq(j).text()
+                    && transferDoubleGroupListLiUlLis.eq(j).text().trim()
                         .substr(0, $(self.groupItemSearcherId).val().length).toLowerCase() == $(self.groupItemSearcherId).val().toLowerCase()) {
                             transferDoubleGroupListLiUlLis.eq(j).parent("ul").parent("li").css('display', 'block');
                             transferDoubleGroupListLiUlLis.eq(j).css('display', 'block');
@@ -722,7 +722,7 @@
 
             for (let j = 0; j < transferDoubleListLis.length; j++) {
                 if (!transferDoubleListLis.eq(j).hasClass("selected-hidden")
-                    && transferDoubleListLis.eq(j).text()
+                    && transferDoubleListLis.eq(j).text().trim()
                         .substr(0, $(self.itemSearcherId).val().length).toLowerCase() == $(self.itemSearcherId).val().toLowerCase()) {
                             transferDoubleListLis.eq(j).css('display', 'block');
                 }
@@ -973,7 +973,7 @@
             transferDoubleSelectedListLis.css('display', 'none');
 
             for (let i = 0; i < transferDoubleSelectedListLis.length; i++) {
-                if (transferDoubleSelectedListLis.eq(i).text()
+                if (transferDoubleSelectedListLis.eq(i).text().trim()
                         .substr(0, $(self.selectedItemSearcherId).val().length).toLowerCase() == $(self.selectedItemSearcherId).val().toLowerCase()) {
                             transferDoubleSelectedListLis.eq(i).css('display', 'block');
                 }
