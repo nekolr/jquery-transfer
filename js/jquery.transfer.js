@@ -150,6 +150,9 @@
             this.left_checkbox_item_click_handler();
             // left item select all handler
             this.left_item_select_all_handler();
+            // right item select all handler
+            this.right_item_select_all_handler();
+
             // left items search handler
             this.left_items_search_handler();
         }
@@ -160,6 +163,7 @@
         this.move_pre_selection_items_handler();
         // move the selected item to the left handler
         this.move_selected_items_handler();
+
         // right items search handler
         this.right_items_search_handler();
     }
@@ -289,9 +293,16 @@
               </div>
             </div>
 
+
+
             <div class="transfer-double-list-footer">
-              <label class="selected_total_num_${this.id}">${this.default_right_item_total_num_text}</label>
+              <div class="checkbox-group">
+                <input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_${this.id}">
+                <label for="rightItemSelectAll_${this.id}" class="total_num_${this.id}"></label>
+              </div>
             </div>
+
+
 
           </div>
 
@@ -702,6 +713,37 @@
     }
 
     /**
+     * right item select all handler
+     */
+    Transfer.prototype.right_item_select_all_handler = function() {
+        let self = this;
+        $(self.rightItemSelectAllId).on("click", function () {
+            let checkboxItems = self.$element.find(self.checkboxItemClass);
+
+            if ($(this).is(':checked')) {
+
+              for (let i = 0; i < checkboxItems.length; i++) {
+                if (checkboxItems.eq(i).parent("div").parent("li").css('display') == "none" && !checkboxItems.eq(i).is(':checked')) {
+                  checkboxItems.eq(i).prop("checked", true);
+                }
+              }
+              self._data.put("pre_selection_count", self._data.get("total_count"));
+              $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
+
+            }else {
+                for (let i = 0; i < checkboxItems.length; i++) {
+                    if (checkboxItems.eq(i).parent("div").parent("li").css('display') == "none" && checkboxItems.eq(i).is(':checked')) {
+                        checkboxItems.eq(i).prop("checked", false);
+                    }
+                }
+                $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
+                self._data.put("pre_selection_count", 0);
+            }
+
+        });
+    }
+
+    /**
      * left items search handler
      */
     Transfer.prototype.left_items_search_handler = function() {
@@ -734,6 +776,7 @@
      * right checkbox item click handler
      */
     Transfer.prototype.right_checkbox_item_click_handler = function() {
+
         let self = this;
         self.$element.on("click", self.checkboxSelectedItemClass, function () {
             let pre_selection_num = 0;
@@ -747,6 +790,13 @@
             } else {
                 $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
             }
+
+            if (self._data.get("pre_selection_count") < self._data.get("total_count")) {
+                $(self.rightItemSelectAllId).prop("checked", false);
+            } else if (self._data.get("pre_selection_count") == self._data.get("total_count")) {
+                $(self.rightItemSelectAllId).prop("checked", true);
+            }
+
         });
     }
 
