@@ -31,8 +31,6 @@
         // merge options
         this.settings = $.extend(this.defaults, options);
 
-        // The total number of selected items
-        this.selected_total_num = 0;
         // tab text
         this.tabNameText = this.settings.tabNameText;
         // right tab text
@@ -98,7 +96,6 @@
         // class selector for the right select checkbox item
         this.checkboxSelectedItemClass = ".checkbox-selected-item-" + this.id;
         // id selector for the right item select all
-        // TODO: next step use it
         this.rightItemSelectAllId = "#rightItemSelectAll_" + this.id;
         // class selector for the
         this.selectedTotalNumLabelClass = ".selected_total_num_" + this.id;
@@ -150,9 +147,6 @@
             this.left_checkbox_item_click_handler();
             // left item select all handler
             this.left_item_select_all_handler();
-            // right item select all handler
-            this.right_item_select_all_handler();
-
             // left items search handler
             this.left_items_search_handler();
         }
@@ -163,9 +157,10 @@
         this.move_pre_selection_items_handler();
         // move the selected item to the left handler
         this.move_selected_items_handler();
-
         // right items search handler
         this.right_items_search_handler();
+        // right item select all handler
+        this.right_item_select_all_handler();
     }
 
     /**
@@ -293,16 +288,12 @@
               </div>
             </div>
 
-
-
             <div class="transfer-double-list-footer">
               <div class="checkbox-group">
                 <input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_${this.id}">
-                <label for="rightItemSelectAll_${this.id}" class="total_num_${this.id}"></label>
+                <label for="rightItemSelectAll_${this.id}" class="selected_total_num_${this.id}"></label>
               </div>
             </div>
-
-
 
           </div>
 
@@ -321,11 +312,11 @@
 
         // render total num
         this.$element.find(this.totalNumLabelClass).empty();
-        this.$element.find(this.totalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("total_count")));
+        this.$element.find(this.totalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("left_total_count")));
 
         // render right total num
         this.$element.find(this.selectedTotalNumLabelClass).empty();
-        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
+        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
 
         // callable
         applyCallable(this);
@@ -342,19 +333,21 @@
         this.$element.find(this.transferDoubleSelectedListUlClass).append(this.generate_right_group_items());
 
         let self = this;
-        let total_count = 0;
+        let left_total_count = 0;
         this._data.forEach(function(key, value) {
-            total_count += value["total_count"]
-            value["total_count"] == 0 ? self.$element.find("#" + key).prop("disabled", true).prop("checked", true) : void(0)
+            if (Object.prototype.toString.call(value) === '[object Object]') {
+                left_total_count += value["left_total_count"]
+            }
+            value["left_total_count"] == 0 ? self.$element.find("#" + key).prop("disabled", true).prop("checked", true) : void(0)
         })
 
         // render total num
         this.$element.find(this.groupTotalNumLabelClass).empty();
-        this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, total_count));
+        this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, left_total_count));
 
         // render right total num
         this.$element.find(this.selectedTotalNumLabelClass).empty();
-        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
+        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
 
         // callable
         applyCallable(this);
@@ -372,7 +365,9 @@
         for (let i = 0; i < dataArray.length; i++) {
 
             let selected = dataArray[i].selected || false;
-            selected ? this.selected_total_num++ : void(0)
+            let right_total_count = this._data.get("right_total_count") || 0;
+            this._data.get("right_total_count") == undefined ? this._data.put("right_total_count", right_total_count) : void(0)
+            selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
 
             html +=
             `<li class="transfer-double-list-li transfer-double-list-li-${this.id} ${(selected ? 'selected-hidden' : '')}">
@@ -385,8 +380,8 @@
             </li>`;
         }
 
-        this._data.put("pre_selection_count", 0);
-        this._data.put("total_count", dataArray.length - this.selected_total_num);
+        this._data.put("left_pre_selection_count", 0);
+        this._data.put("left_total_count", dataArray.length - this._data.get("right_total_count"));
 
         return html;
     }
@@ -408,8 +403,8 @@
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
 
                 let _value = {};
-                _value["pre_selection_count"] = 0
-                _value["total_count"] = groupDataArray[i][groupArrayName].length
+                _value["left_pre_selection_count"] = 0
+                _value["left_total_count"] = groupDataArray[i][groupArrayName].length
                 this._data.put('group_' + i + '_' + this.id, _value);
 
                 html +=
@@ -423,10 +418,12 @@
                 for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
 
                     let selected = groupDataArray[i][groupArrayName][j].selected || false;
-                    selected ? this.selected_total_num++ : void(0)
+                    let right_total_count = this._data.get("right_total_count") || 0;
+                    this._data.get("right_total_count") == undefined ? this._data.put("right_total_count", right_total_count) : void(0)
+                    selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
 
                     let groupItem = this._data.get('group_' + i + '_' + this.id);
-                    selected ? groupItem["total_count"] -= 1 : void(0)
+                    selected ? groupItem["left_total_count"] -= 1 : void(0)
 
                     html += `
                     <li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-${id} ${(selected ? 'selected-hidden' : '')}">
@@ -451,13 +448,22 @@
         let dataArray = this.settings.dataArray;
         let itemName = this.settings.itemName;
         let valueName = this.settings.valueName;
+        let selected_count = 0;
 
+        this._data.put("right_pre_selection_count", selected_count);
+        this._data.put("right_total_count", selected_count);
 
         for (let i = 0; i < dataArray.length; i++) {
             if (dataArray[i].selected || false) {
+                this._data.put("right_total_count", ++selected_count);
                 html += this.generate_item(this.id, i, dataArray[i][valueName], dataArray[i][itemName]);
             }
         }
+
+        if (this._data.get("right_total_count") == 0) {
+            $(this.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
+        }
+
         return html;
     }
 
@@ -470,16 +476,26 @@
         let groupArrayName = this.settings.groupArrayName;
         let itemName = this.settings.itemName;
         let valueName = this.settings.valueName;
+        let selected_count = 0;
+
+        this._data.put("right_pre_selection_count", selected_count);
+        this._data.put("right_total_count", selected_count);
 
         for (let i = 0; i < groupDataArray.length; i++) {
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
                 for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
                     if (groupDataArray[i][groupArrayName][j].selected || false) {
+                        this._data.put("right_total_count", ++selected_count);
                         html += this.generate_group_item(this.id, i, j, groupDataArray[i][groupArrayName][j][valueName], groupDataArray[i][groupArrayName][j][itemName]);
                     }
                 }
             }
         }
+
+        if (this._data.get("right_total_count") == 0) {
+            $(this.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
+        }
+
         return html;
     }
 
@@ -492,18 +508,18 @@
             let pre_selection_num = 0;
             $(this).is(":checked") ? pre_selection_num++ : pre_selection_num--
 
-            let pre_selection_count = self._data.get("pre_selection_count");
-            self._data.put("pre_selection_count", pre_selection_count + pre_selection_num);
+            let left_pre_selection_count = self._data.get("left_pre_selection_count");
+            self._data.put("left_pre_selection_count", left_pre_selection_count + pre_selection_num);
 
-            if (self._data.get("pre_selection_count") > 0) {
+            if (self._data.get("left_pre_selection_count") > 0) {
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
             } else {
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
             }
 
-            if (self._data.get("pre_selection_count") < self._data.get("total_count")) {
+            if (self._data.get("left_pre_selection_count") < self._data.get("left_total_count")) {
                 $(self.leftItemSelectAllId).prop("checked", false);
-            } else if (self._data.get("pre_selection_count") == self._data.get("total_count")) {
+            } else if (self._data.get("left_pre_selection_count") == self._data.get("left_total_count")) {
                 $(self.leftItemSelectAllId).prop("checked", true);
             }
         });
@@ -517,18 +533,20 @@
         self.$element.on("click", self.groupCheckboxItemClass, function () {
             let pre_selection_num = 0;
             let total_pre_selection_num = 0;
-            let remain_total_count = 0
+            let remain_left_total_count = 0
 
             $(this).is(":checked") ? pre_selection_num++ : pre_selection_num--
 
             let groupIndex = $(this).prop("id").split("_")[1];
             let groupItem =  self._data.get('group_' + groupIndex + '_' + self.id);
-            let pre_selection_count = groupItem["pre_selection_count"];
-            groupItem["pre_selection_count"] = pre_selection_count + pre_selection_num
+            let left_pre_selection_count = groupItem["left_pre_selection_count"];
+            groupItem["left_pre_selection_count"] = left_pre_selection_count + pre_selection_num
 
             self._data.forEach(function(key, value) {
-                total_pre_selection_num += value["pre_selection_count"]
-                remain_total_count += value["total_count"]
+                if (Object.prototype.toString.call(value) === '[object Object]') {
+                    total_pre_selection_num += value["left_pre_selection_count"]
+                    remain_left_total_count += value["left_total_count"]
+                }
             });
 
             if (total_pre_selection_num > 0) {
@@ -537,13 +555,13 @@
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
             }
 
-            if (groupItem["pre_selection_count"] < groupItem["total_count"]) {
+            if (groupItem["left_pre_selection_count"] < groupItem["left_total_count"]) {
                 self.$element.find("#group_" + groupIndex + "_" + self.id).prop("checked", false);
-            } else if (groupItem["pre_selection_count"] == groupItem["total_count"]) {
+            } else if (groupItem["left_pre_selection_count"] == groupItem["left_total_count"]) {
                 self.$element.find("#group_" + groupIndex + "_" + self.id).prop("checked", true);
             }
 
-            if (total_pre_selection_num == remain_total_count) {
+            if (total_pre_selection_num == remain_left_total_count) {
                 $(self.groupItemSelectAllId).prop("checked", true);
             } else {
                 $(self.groupItemSelectAllId).prop("checked", false);
@@ -560,8 +578,8 @@
             // group index
             let groupIndex = ($(this).attr("id")).split("_")[1];
             let groups =  self.$element.find(".belongs-group-" + groupIndex + "-" + self.id);
-            let pre_selection_count = 0;
-            let total_count = 0;
+            let left_pre_selection_count = 0;
+            let left_total_count = 0;
 
             // a group is checked
             if ($(this).is(':checked')) {
@@ -574,14 +592,16 @@
                 }
 
                 let groupItem = self._data.get($(this).prop("id"));
-                groupItem["pre_selection_count"] = groupItem["total_count"];
+                groupItem["left_pre_selection_count"] = groupItem["left_total_count"];
 
                 self._data.forEach(function(key, value) {
-                    pre_selection_count += value["pre_selection_count"];
-                    total_count += value["total_count"];
+                    if (Object.prototype.toString.call(value) === '[object Object]') {
+                        left_pre_selection_count += value["left_pre_selection_count"];
+                        left_total_count += value["left_total_count"];
+                    }
                 })
 
-                if (pre_selection_count == total_count) {
+                if (left_pre_selection_count == left_total_count) {
                     $(self.groupItemSelectAllId).prop("checked", true);
                 }
             } else {
@@ -591,18 +611,20 @@
                     }
                 }
 
-                self._data.get($(this).prop("id"))["pre_selection_count"] = 0;
+                self._data.get($(this).prop("id"))["left_pre_selection_count"] = 0;
 
                 self._data.forEach(function(key, value) {
-                    pre_selection_count += value["pre_selection_count"];
-                    total_count += value["total_count"];
+                    if (Object.prototype.toString.call(value) === '[object Object]') {
+                        left_pre_selection_count += value["left_pre_selection_count"];
+                        left_total_count += value["left_total_count"];
+                    }
                 })
 
-                if (pre_selection_count != total_count) {
+                if (left_pre_selection_count != left_total_count) {
                     $(self.groupItemSelectAllId).prop("checked", false);
                 }
 
-                if (pre_selection_count == 0) {
+                if (left_pre_selection_count == 0) {
                     $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 }
             }
@@ -620,14 +642,17 @@
                 for (let i = 0; i < groupCheckboxItems.length; i++) {
                     if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && !groupCheckboxItems.eq(i).is(':checked')) {
                         groupCheckboxItems.eq(i).prop("checked", true);
-                    }
-                    if (!self.$element.find(self.groupSelectAllClass).eq(i).is(':checked')) {
-                        self.$element.find(self.groupSelectAllClass).eq(i).prop("checked", true);
+                        let groupIndex = groupCheckboxItems.eq(i).prop("id").split("_")[1];
+                        if (!self.$element.find(self.groupSelectAllClass).eq(groupIndex).is(':checked')) {
+                            self.$element.find(self.groupSelectAllClass).eq(groupIndex).prop("checked", true);
+                        }
                     }
                 }
 
                 self._data.forEach(function (key, value) {
-                    value["pre_selection_count"] = value["total_count"];
+                    if (Object.prototype.toString.call(value) === '[object Object]') {
+                        value["left_pre_selection_count"] = value["left_total_count"];
+                    }
                 })
 
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
@@ -635,14 +660,17 @@
                 for (let i = 0; i < groupCheckboxItems.length; i++) {
                     if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && groupCheckboxItems.eq(i).is(':checked')) {
                         groupCheckboxItems.eq(i).prop("checked", false);
-                    }
-                    if (self.$element.find(self.groupSelectAllClass).eq(i).is(':checked')) {
-                        self.$element.find(self.groupSelectAllClass).eq(i).prop("checked", false);
+                        let groupIndex = groupCheckboxItems.eq(i).prop("id").split("_")[1];
+                        if (self.$element.find(self.groupSelectAllClass).eq(groupIndex).is(':checked')) {
+                            self.$element.find(self.groupSelectAllClass).eq(groupIndex).prop("checked", false);
+                        }
                     }
                 }
 
                 self._data.forEach(function (key, value) {
-                    value["pre_selection_count"] = 0;
+                    if (Object.prototype.toString.call(value) === '[object Object]') {
+                        value["left_pre_selection_count"] = 0;
+                    }
                 })
 
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
@@ -698,7 +726,7 @@
                         checkboxItems.eq(i).prop("checked", true);
                     }
                 }
-                self._data.put("pre_selection_count", self._data.get("total_count"));
+                self._data.put("left_pre_selection_count", self._data.get("left_total_count"));
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
             } else {
                 for (let i = 0; i < checkboxItems.length; i++) {
@@ -707,7 +735,7 @@
                     }
                 }
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
-                self._data.put("pre_selection_count", 0);
+                self._data.put("left_pre_selection_count", 0);
             }
         });
     }
@@ -718,26 +746,31 @@
     Transfer.prototype.right_item_select_all_handler = function() {
         let self = this;
         $(self.rightItemSelectAllId).on("click", function () {
-            let checkboxItems = self.$element.find(self.checkboxItemClass);
-
+            let checkboxSelectedItems = self.$element.find(self.checkboxSelectedItemClass);
             if ($(this).is(':checked')) {
-
-              for (let i = 0; i < checkboxItems.length; i++) {
-                if (checkboxItems.eq(i).parent("div").parent("li").css('display') == "none" && !checkboxItems.eq(i).is(':checked')) {
-                  checkboxItems.eq(i).prop("checked", true);
+                self._data.put("right_pre_selection_count", 0);
+                let right_pre_selection_count = self._data.get("right_pre_selection_count");
+                for (let i = 0; i < checkboxSelectedItems.length; i++) {
+                    checkboxSelectedItems.eq(i).prop("checked", true);
+                    self._data.put("right_pre_selection_count", ++right_pre_selection_count);
                 }
-              }
-              self._data.put("pre_selection_count", self._data.get("total_count"));
-              $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
 
-            }else {
-                for (let i = 0; i < checkboxItems.length; i++) {
-                    if (checkboxItems.eq(i).parent("div").parent("li").css('display') == "none" && checkboxItems.eq(i).is(':checked')) {
-                        checkboxItems.eq(i).prop("checked", false);
+                $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
+    
+                if (self._data.get("right_pre_selection_count") < self._data.get("right_total_count")) {
+                    $(self.rightItemSelectAllId).prop("checked", false);
+                } else if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count")) {
+                    $(self.rightItemSelectAllId).prop("checked", true);
+                }
+
+            } else {
+                for (let i = 0; i < checkboxSelectedItems.length; i++) {
+                    for (let i = 0; i < checkboxSelectedItems.length; i++) {
+                        checkboxSelectedItems.eq(i).prop("checked", false);
                     }
                 }
                 $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
-                self._data.put("pre_selection_count", 0);
+                self._data.put("right_pre_selection_count", 0);
             }
 
         });
@@ -776,24 +809,23 @@
      * right checkbox item click handler
      */
     Transfer.prototype.right_checkbox_item_click_handler = function() {
-
         let self = this;
         self.$element.on("click", self.checkboxSelectedItemClass, function () {
             let pre_selection_num = 0;
-            for (let i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length; i++) {
-                if (self.$element.find(self.checkboxSelectedItemClass).eq(i).is(':checked')) {
-                    pre_selection_num++;
-                }
-            }
-            if (pre_selection_num > 0) {
+            $(this).is(":checked") ? pre_selection_num++ : pre_selection_num--
+
+            let right_pre_selection_count = self._data.get("right_pre_selection_count");
+            self._data.put("right_pre_selection_count", right_pre_selection_count + pre_selection_num);
+
+            if (self._data.get("right_pre_selection_count") > 0) {
                 $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
             } else {
                 $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
             }
 
-            if (self._data.get("pre_selection_count") < self._data.get("total_count")) {
+            if (self._data.get("right_pre_selection_count") < self._data.get("right_total_count")) {
                 $(self.rightItemSelectAllId).prop("checked", false);
-            } else if (self._data.get("pre_selection_count") == self._data.get("total_count")) {
+            } else if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count")) {
                 $(self.rightItemSelectAllId).prop("checked", true);
             }
 
@@ -832,10 +864,12 @@
                 pre_selection_num++;
 
                 let groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
-                let total_count = groupItem["total_count"];
-                let pre_selection_count = groupItem["pre_selection_count"];
-                groupItem["total_count"] = --total_count;
-                groupItem["pre_selection_count"] = --pre_selection_count;
+                let left_total_count = groupItem["left_total_count"];
+                let left_pre_selection_count = groupItem["left_pre_selection_count"];
+                let right_total_count = this._data.get("right_total_count");
+                groupItem["left_total_count"] = --left_total_count;
+                groupItem["left_pre_selection_count"] = --left_pre_selection_count;
+                this._data.put("right_total_count", ++right_total_count);
             }
         }
 
@@ -847,19 +881,24 @@
                 }
             }
 
-            let remain_total_count = 0;
+            let remain_left_total_count = 0;
             this._data.forEach(function(key, value) {
-                remain_total_count += value["total_count"];
+                if (Object.prototype.toString.call(value) === '[object Object]') {
+                    remain_left_total_count += value["left_total_count"];
+                }
             })
-            this.selected_total_num = this.group_item_total_num - remain_total_count;
 
             let groupTotalNumLabel = this.$element.find(this.groupTotalNumLabelClass);
             groupTotalNumLabel.empty();
-            groupTotalNumLabel.append(get_total_num_text(this.default_total_num_text_template, remain_total_count));
-            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
+            groupTotalNumLabel.append(get_total_num_text(this.default_total_num_text_template, remain_left_total_count));
+            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
 
-            if (remain_total_count == 0) {
+            if (remain_left_total_count == 0) {
                 $(this.groupItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
+            }
+
+            if (this._data.get("right_total_count") > 0) {
+                $(this.rightItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
 
             $(this.addSelectedButtonId).removeClass("btn-arrow-active");
@@ -887,20 +926,25 @@
                 html += self.generate_item(self.id, index, value, labelText);
                 pre_selection_num++;
 
-                let pre_selection_count = self._data.get("pre_selection_count");
-                let total_count = self._data.get("total_count");
-                self._data.put("pre_selection_count", --pre_selection_count);
-                self._data.put("total_count", --total_count);
+                let left_pre_selection_count = self._data.get("left_pre_selection_count");
+                let left_total_count = self._data.get("left_total_count");
+                let right_total_count = self._data.get("right_total_count");
+                self._data.put("left_pre_selection_count", --left_pre_selection_count);
+                self._data.put("left_total_count", --left_total_count);
+                self._data.put("right_total_count", ++right_total_count);
             }
         }
+
+        if (self._data.get("right_total_count") > 0) {
+            $(self.rightItemSelectAllId).prop("checked", false).removeAttr("disabled");
+        }
+
         if (pre_selection_num > 0) {
             let totalNumLabel = self.$element.find(self.totalNumLabelClass);
             totalNumLabel.empty();
-
-            self.selected_total_num += pre_selection_num
-            totalNumLabel.append(get_total_num_text(self.default_total_num_text_template, self._data.get("total_count")));
-            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self.selected_total_num));
-            if (self._data.get("total_count") == 0) {
+            totalNumLabel.append(get_total_num_text(self.default_total_num_text_template, self._data.get("left_total_count")));
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_total_count")));
+            if (self._data.get("left_total_count") == 0) {
                 $(self.leftItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
             }
 
@@ -943,8 +987,12 @@
                 pre_selection_num++;
 
                 let groupItem = this._data.get('group_' + groupIndex + '_' + this.id);
-                let total_count = groupItem["total_count"];
-                groupItem["total_count"] = ++total_count;
+                let left_total_count = groupItem["left_total_count"];
+                let right_pre_selection_count = this._data.get("right_pre_selection_count");
+                let right_total_count = this._data.get("right_total_count");
+                groupItem["left_total_count"] = ++left_total_count;
+                this._data.put("right_total_count", --right_total_count);
+                this._data.put("right_pre_selection_count", --right_pre_selection_count);
 
             } else {
                 i++;
@@ -953,15 +1001,19 @@
         if (pre_selection_num > 0) {
             this.$element.find(this.groupTotalNumLabelClass).empty();
 
-            let remain_total_count = 0;
+            let remain_left_total_count = 0;
             this._data.forEach(function(key, value) {
-                remain_total_count += value["total_count"];
+                if (Object.prototype.toString.call(value) === '[object Object]') {
+                    remain_left_total_count += value["left_total_count"];
+                }
             })
 
-            this.selected_total_num -= pre_selection_num;
+            if (this._data.get("right_total_count") == 0) {
+                $(this.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
+            }
 
-            this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, remain_total_count));
-            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this.selected_total_num));
+            this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, remain_left_total_count));
+            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
             if ($(this.groupItemSelectAllId).is(':checked')) {
                 $(this.groupItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
@@ -985,8 +1037,13 @@
 
                 pre_selection_num++;
 
-                let total_count = self._data.get("total_count");
-                self._data.put("total_count", ++total_count);
+                let right_total_count = self._data.get("right_total_count");
+                let right_pre_selection_count = self._data.get("right_pre_selection_count");
+                self._data.put("right_total_count", --right_total_count);
+                self._data.put("right_pre_selection_count", --right_pre_selection_count);
+
+                let left_total_count = self._data.get("left_total_count");
+                self._data.put("left_total_count", ++left_total_count);
 
 
             } else {
@@ -994,12 +1051,15 @@
             }
         }
 
+        if (self._data.get("right_total_count") == 0) {
+            $(self.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
+        }
+
 
         if (pre_selection_num > 0) {
             self.$element.find(self.totalNumLabelClass).empty();
-            self.selected_total_num -= pre_selection_num;
-            self.$element.find(self.totalNumLabelClass).append(get_total_num_text(self.default_total_num_text_template, self._data.get("total_count")));
-            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self.selected_total_num));
+            self.$element.find(self.totalNumLabelClass).append(get_total_num_text(self.default_total_num_text_template, self._data.get("left_total_count")));
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_total_count")));
             if ($(self.leftItemSelectAllId).is(':checked')) {
                 $(self.leftItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
