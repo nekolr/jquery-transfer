@@ -168,25 +168,18 @@
      */
     Transfer.prototype.generate_transfer = function() {
         let html =
-            `
-            <div class="transfer-double" id="transfer_double_${this.id}">
-              <div class="transfer-double-header"></div>
-              <div class="transfer-double-content clearfix">
-                ${this.generate_left_part()}
-
-                <div class="transfer-double-content-middle">
-                  <div class="btn-select-arrow" id="add_selected_${this.id}">
-                    <i class="iconfont icon-forward"></i>
-                  </div>
-                  <div class="btn-select-arrow" id="delete_selected_${this.id}">
-                    <i class="iconfont icon-back"></i>
-                  </div>
-                </div>
-
-                ${this.generate_right_part()}
-              </div>
-              <div class="transfer-double-footer"></div>
-            </div>`;
+            '<div class="transfer-double" id="transfer_double_' + this.id + '">'
+            + '<div class="transfer-double-header"></div>'
+            + '<div class="transfer-double-content clearfix">'
+            + this.generate_left_part()
+            + '<div class="transfer-double-content-middle">'
+            + '<div class="btn-select-arrow" id="add_selected_' + this.id + '"><i class="iconfont icon-forward"></i></div>'
+            + '<div class="btn-select-arrow" id="delete_selected_' + this.id + '"><i class="iconfont icon-back"></i></div>'
+            + '</div>'
+            + this.generate_right_part()
+            + '</div>'
+            + '<div class="transfer-double-footer"></div>'
+            + '</div>';
         return html;
     }
 
@@ -194,110 +187,90 @@
      * generate transfer's left part
      */
     Transfer.prototype.generate_left_part = function() {
-        return `
-        <div class="transfer-double-content-left">
-          <div class="transfer-double-content-param">
-            <div class="param-item">
-              ${(this.isGroup ? this.tabNameText : this.tabNameText)}
-            </div>
-          </div>
-          ${(this.isGroup ? this.generate_group_items_container() : this.generate_items_container())}
-        </div>`;
+        return '<div class="transfer-double-content-left">'
+        + '<div class="transfer-double-content-param">'
+        + '<div class="param-item">' + (this.isGroup ? this.tabNameText : this.tabNameText) + '</div>'
+        + '</div>'
+        + (this.isGroup ? this.generate_group_items_container() : this.generate_items_container())
+        + '</div>'
     }
 
     /**
      * generate group items container
      */
     Transfer.prototype.generate_group_items_container = function() {
-        return `
-        <div class="transfer-double-list transfer-double-list-${this.id}">
-
-          <div class="transfer-double-list-header">
-            <div class="transfer-double-list-search">
-              <input class="transfer-double-list-search-input" type="text" id="groupListSearch_${this.id}" placeholder="${this.searchPlaceholderText}" value="" />
-            </div>
-          </div>
-
-          <div class="transfer-double-list-content">
-            <div class="transfer-double-list-main">
-              <ul class="transfer-double-group-list-ul transfer-double-group-list-ul-${this.id}"></ul>
-            </div>
-          </div>
-
-          <div class="transfer-double-list-footer">
-            <div class="checkbox-group">
-              <input type="checkbox" class="checkbox-normal" id="groupItemSelectAll_${this.id}">
-              <label for="groupItemSelectAll_${this.id}" class="group_total_num_${this.id}"></label>
-            </div>
-          </div>
-
-        </div>`;
+        return '<div class="transfer-double-list transfer-double-list-' + this.id + '">'
+        + '<div class="transfer-double-list-header">'
+        + '<div class="transfer-double-list-search">'
+        + '<input class="transfer-double-list-search-input" type="text" id="groupListSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-list-content">'
+        + '<div class="transfer-double-list-main">'
+        + '<ul class="transfer-double-group-list-ul transfer-double-group-list-ul-' + this.id + '">'
+        + '</ul>'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-list-footer">'
+        + '<div class="checkbox-group">'
+        + '<input type="checkbox" class="checkbox-normal" id="groupItemSelectAll_' + this.id + '"><label for="groupItemSelectAll_' + this.id + '" class="group_total_num_' + this.id + '"></label>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
     }
 
     /**
      * generate items container
      */
     Transfer.prototype.generate_items_container = function() {
-        return `
-        <div class="transfer-double-list transfer-double-list-${this.id}">
-
-          <div class="transfer-double-list-header">
-            <div class="transfer-double-list-search">
-              <input class="transfer-double-list-search-input" type="text" id="listSearch_${this.id}" placeholder="${this.searchPlaceholderText}" value="" />
-            </div>
-          </div>
-
-          <div class="transfer-double-list-content">
-            <div class="transfer-double-list-main">
-              <ul class="transfer-double-list-ul transfer-double-list-ul-${this.id}"></ul>
-            </div>
-          </div>
-
-          <div class="transfer-double-list-footer">
-            <div class="checkbox-group">
-              <input type="checkbox" class="checkbox-normal" id="leftItemSelectAll_${this.id}">
-              <label for="leftItemSelectAll_${this.id}" class="total_num_${this.id}"></label>
-            </div>
-          </div>
-
-        </div>`;
+        return '<div class="transfer-double-list transfer-double-list-' + this.id + '">'
+        + '<div class="transfer-double-list-header">'
+        + '<div class="transfer-double-list-search">'
+        + '<input class="transfer-double-list-search-input" type="text" id="listSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-list-content">'
+        + '<div class="transfer-double-list-main">'
+        + '<ul class="transfer-double-list-ul transfer-double-list-ul-' + this.id + '">'
+        + '</ul>'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-list-footer">'
+        + '<div class="checkbox-group">'
+        + '<input type="checkbox" class="checkbox-normal" id="leftItemSelectAll_' + this.id + '"><label for="leftItemSelectAll_' + this.id + '" class="total_num_' + this.id + '"></label>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
     }
 
     /**
      * generate transfer's right part
      */
     Transfer.prototype.generate_right_part = function() {
-        return `
-        <div class="transfer-double-content-right">
-
-          <div class="transfer-double-content-param">
-            <div class="param-item">${this.rightTabNameText}</div>
-          </div>
-
-          <div class="transfer-double-selected-list">
-
-            <div class="transfer-double-selected-list-header">
-              <div class="transfer-double-selected-list-search">
-                <input class="transfer-double-selected-list-search-input" type="text" id="selectedListSearch_${this.id}" placeholder="${this.searchPlaceholderText}" value="" />
-              </div>
-            </div>
-
-            <div class="transfer-double-selected-list-content">
-              <div class="transfer-double-selected-list-main">
-                <ul class="transfer-double-selected-list-ul transfer-double-selected-list-ul-${this.id}"></ul>
-              </div>
-            </div>
-
-            <div class="transfer-double-list-footer">
-              <div class="checkbox-group">
-                <input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_${this.id}">
-                <label for="rightItemSelectAll_${this.id}" class="selected_total_num_${this.id}"></label>
-              </div>
-            </div>
-
-          </div>
-
-        </div>`;
+        return '<div class="transfer-double-content-right">'
+        + '<div class="transfer-double-content-param">'
+        + '<div class="param-item">' + this.rightTabNameText + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-selected-list">'
+        + '<div class="transfer-double-selected-list-header">'
+        + '<div class="transfer-double-selected-list-search">'
+        + '<input class="transfer-double-selected-list-search-input" type="text" id="selectedListSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-selected-list-content">'
+        + '<div class="transfer-double-selected-list-main">'
+        + '<ul class="transfer-double-selected-list-ul transfer-double-selected-list-ul-' + this.id + '">'
+        + '</ul>'
+        + '</div>'
+        + '</div>'
+        + '<div class="transfer-double-list-footer">'
+        + '<div class="checkbox-group">'
+        + '<input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_' + this.id + '">'
+        + '<label for="rightItemSelectAll_' + this.id + '" class="selected_total_num_' +  this.id + '"></label>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
     }
 
     /**
@@ -370,14 +343,13 @@
             selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
 
             html +=
-            `<li class="transfer-double-list-li transfer-double-list-li-${this.id} ${(selected ? 'selected-hidden' : '')}">
-
-              <div class="checkbox-group">
-                <input type="checkbox" value="${dataArray[i][valueName]}" class="checkbox-normal checkbox-item-${this.id}" id="itemCheckbox_${i}_${this.id}">
-                <label class="checkbox-name-${this.id}" for="itemCheckbox_${i}_${this.id}">${dataArray[i][itemName]}</label>
-              </div>
-
-            </li>`;
+            '<li class="transfer-double-list-li transfer-double-list-li-' + this.id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
+            '<div class="checkbox-group">' +
+            '<input type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-'
+            + this.id + '" id="itemCheckbox_' + i + '_' + this.id + '">' +
+            '<label class="checkbox-name-' + this.id + '" for="itemCheckbox_' + i + '_' + this.id + '">' + dataArray[i][itemName] + '</label>' +
+            '</div>' +
+            '</li>'
         }
 
         this._data.put("left_pre_selection_count", 0);
@@ -408,13 +380,13 @@
                 this._data.put('group_' + i + '_' + this.id, _value);
 
                 html +=
-                `<li class="transfer-double-group-list-li transfer-double-group-list-li-${id}">
-                  <div class="checkbox-group">
-                    <input type="checkbox" class="checkbox-normal group-select-all-${id}" id="group_${i}_${id}">
-                    <label for="group_${i}_${id}" class="group-name-${id}">${groupDataArray[i][groupItemName]}</label>
-                </div>`;
+                '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
+                + '<div class="checkbox-group">' +
+                '<input type="checkbox" class="checkbox-normal group-select-all-' + id + '" id="group_' + i + '_' + id + '">' +
+                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupItemName] + '</label>' +
+                '</div>';
 
-                html += `<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-${id}">`
+                html += '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + id + '">'
                 for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
 
                     let selected = groupDataArray[i][groupArrayName][j].selected || false;
@@ -425,13 +397,12 @@
                     let groupItem = this._data.get('group_' + i + '_' + this.id);
                     selected ? groupItem["left_total_count"] -= 1 : void(0)
 
-                    html += `
-                    <li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-${id} ${(selected ? 'selected-hidden' : '')}">
-                      <div class="checkbox-group">
-                        <input type="checkbox" value="${groupDataArray[i][groupArrayName][j][valueName]}" class="checkbox-normal group-checkbox-item-${id} belongs-group-${i}-${id}" id="group_${i}_checkbox_${j}_${id}">
-                        <label for="group_${i}_checkbox_${j}_${id}" class="group-checkbox-name-${id}">${groupDataArray[i][groupArrayName][j][itemName]}</label>
-                      </div>
-                    </li>`;
+                    html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
+                        '<div class="checkbox-group">' +
+                        '<input type="checkbox" value="' + groupDataArray[i][groupArrayName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + id + ' belongs-group-' + i + '-' + id + '" id="group_' + i + '_checkbox_' + j + '_' + id + '">' +
+                        '<label for="group_' + i + '_checkbox_' + j + '_' + id + '" class="group-checkbox-name-' + id + '">' + groupDataArray[i][groupArrayName][j][itemName] + '</label>' +
+                        '</div>' +
+                        '</li>';
                 }
                 html += '</ul></li>'
             }
@@ -1095,32 +1066,30 @@
      * generate item
      */
     Transfer.prototype.generate_item = function(id, index, value, labelText) {
-        return `
-        <li class="transfer-double-selected-list-li  transfer-double-selected-list-li-${id} clearfix">
-          <div class="checkbox-group">
-            <input type="checkbox" value="${value}" class="checkbox-normal checkbox-selected-item-${id}" id="selectedCheckbox_${index}_${id}">
-            <label class="checkbox-selected-name-${id}" for="selectedCheckbox_${index}_${id}">${labelText}</label>
-          </div>
-        </li>`;
+        return '<li class="transfer-double-selected-list-li  transfer-double-selected-list-li-' + id + ' .clearfix">' +
+        '<div class="checkbox-group">' +
+        '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="selectedCheckbox_' + index + '_' + id + '">' +
+        '<label class="checkbox-selected-name-' + id + '" for="selectedCheckbox_' + index + '_' + id + '">' + labelText + '</label>' +
+        '</div>' +
+        '</li>';
     }
 
     /**
      * generate group item
      */
     Transfer.prototype.generate_group_item = function(id, groupIndex, itemIndex, value, labelText) {
-        return `
-        <li class="transfer-double-selected-list-li transfer-double-selected-list-li-${id} clearfix">
-          <div class="checkbox-group">
-            <input type="checkbox" value="${value}" class="checkbox-normal checkbox-selected-item-${id}" id="group_${groupIndex}_selectedCheckbox_${itemIndex}_${id}">
-            <label class="checkbox-selected-name-${id}" for="group_${groupIndex}_selectedCheckbox_${itemIndex}_${id}">${labelText}</label>
-          </div>
-        </li>`;
+        return '<li class="transfer-double-selected-list-li transfer-double-selected-list-li-' + id + ' .clearfix">' +
+        '<div class="checkbox-group">' +
+        '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' +
+        '<label class="checkbox-selected-name-' + id + '" for="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' + labelText + '</label>' +
+        '</div>' +
+        '</li>'
     }
 
     /**
      * apply callable
      */
-    async function applyCallable(transfer) {
+    function applyCallable(transfer) {
         if (Object.prototype.toString.call(transfer.settings.callable) === "[object Function]") {
           let selected_items = get_selected_items(transfer);
 
