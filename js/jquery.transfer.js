@@ -376,20 +376,20 @@
 
                 let _value = {};
                 _value["left_pre_selection_count"] = 0
-                _value["left_total_count"] = groupDataArray[i][groupArrayName].length
+                _value["left_total_count"] = groupDataArray[i][groupItemName].length
                 this._data.put('group_' + i + '_' + this.id, _value);
 
                 html +=
                 '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
                 + '<div class="checkbox-group">' +
                 '<input type="checkbox" class="checkbox-normal group-select-all-' + id + '" id="group_' + i + '_' + id + '">' +
-                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupItemName] + '</label>' +
+                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupArrayName] + '</label>' +
                 '</div>';
 
                 html += '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + id + '">'
-                for (let j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
+                for (let j = 0; j < groupDataArray[i][groupItemName].length; j++) {
 
-                    let selected = groupDataArray[i][groupArrayName][j].selected || false;
+                    let selected = groupDataArray[i][groupItemName][j].selected || false;
                     let right_total_count = this._data.get("right_total_count") || 0;
                     this._data.get("right_total_count") == undefined ? this._data.put("right_total_count", right_total_count) : void(0)
                     selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
@@ -399,8 +399,8 @@
 
                     html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
                         '<div class="checkbox-group">' +
-                        '<input type="checkbox" value="' + groupDataArray[i][groupArrayName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + id + ' belongs-group-' + i + '-' + id + '" id="group_' + i + '_checkbox_' + j + '_' + id + '">' +
-                        '<label for="group_' + i + '_checkbox_' + j + '_' + id + '" class="group-checkbox-name-' + id + '">' + groupDataArray[i][groupArrayName][j][itemName] + '</label>' +
+                        '<input type="checkbox" value="' + groupDataArray[i][groupItemName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + id + ' belongs-group-' + i + '-' + id + '" id="group_' + i + '_checkbox_' + j + '_' + id + '">' +
+                        '<label for="group_' + i + '_checkbox_' + j + '_' + id + '" class="group-checkbox-name-' + id + '">' + groupDataArray[i][groupItemName][j][itemName] + '</label>' +
                         '</div>' +
                         '</li>';
                 }
