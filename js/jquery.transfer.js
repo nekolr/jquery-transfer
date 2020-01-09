@@ -722,8 +722,10 @@
                 self._data.put("right_pre_selection_count", 0);
                 let right_pre_selection_count = self._data.get("right_pre_selection_count");
                 for (let i = 0; i < checkboxSelectedItems.length; i++) {
-                    checkboxSelectedItems.eq(i).prop("checked", true);
-                    self._data.put("right_pre_selection_count", ++right_pre_selection_count);
+                    if (checkboxSelectedItems.eq(i).parent("div").parent("li").css('display') != "none" && !checkboxSelectedItems.eq(i).is(':checked')) {
+                        checkboxSelectedItems.eq(i).prop("checked", true);
+                        self._data.put("right_pre_selection_count", ++right_pre_selection_count);
+                    }
                 }
 
                 $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
@@ -736,7 +738,7 @@
 
             } else {
                 for (let i = 0; i < checkboxSelectedItems.length; i++) {
-                    for (let i = 0; i < checkboxSelectedItems.length; i++) {
+                    if (checkboxSelectedItems.eq(i).parent("div").parent("li").css('display') != "none" && checkboxSelectedItems.eq(i).is(':checked')) {
                         checkboxSelectedItems.eq(i).prop("checked", false);
                     }
                 }
@@ -942,10 +944,10 @@
      */
     Transfer.prototype.move_selected_group_items = function() {
         let pre_selection_num = 0;
-        let checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
+        let checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);        
         for (let i = 0; i < checkboxSelectedItems.length;) {
             let another_checkboxSelectedItems = this.$element.find(this.checkboxSelectedItemClass);
-            if (another_checkboxSelectedItems.eq(i).is(':checked')) {
+            if (another_checkboxSelectedItems.eq(i).parent("div").parent("li").css("display") != "none" && another_checkboxSelectedItems.eq(i).is(':checked')) {
                 let checkboxSelectedItemId = another_checkboxSelectedItems.eq(i).attr("id");
                 let groupIndex = checkboxSelectedItemId.split("_")[1];
                 let index = checkboxSelectedItemId.split("_")[3];
@@ -1000,7 +1002,7 @@
 
         for (let i = 0; i < self.$element.find(self.checkboxSelectedItemClass).length;) {
             let checkboxSelectedItems = self.$element.find(self.checkboxSelectedItemClass);
-            if (checkboxSelectedItems.eq(i).is(':checked')) {
+            if (checkboxSelectedItems.eq(i).parent("div").parent("li").css("display") != "none" && checkboxSelectedItems.eq(i).is(':checked')) {
                 let index = checkboxSelectedItems.eq(i).attr("id").split("_")[1];
                 checkboxSelectedItems.parent("div").parent("li").eq(i).remove();
                 self.$element.find(self.checkboxItemClass).eq(index).prop("checked", false);
