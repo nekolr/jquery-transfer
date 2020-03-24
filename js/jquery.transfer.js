@@ -227,9 +227,7 @@
         })
 
         var compiled = $.template(template);
-        return compiled({
-            self: this
-        })
+        return compiled({ self: this })
     }
 
     /**
@@ -260,9 +258,7 @@
         })
 
         var compiled = $.template(template);
-        return compiled({
-            self: this
-        })
+        return compiled({ self: this })
     }
 
     /**
@@ -293,9 +289,7 @@
         })
 
         var compiled = $.template(template);
-        return compiled({
-            self: this
-        })
+        return compiled({ self: this })
     }
 
     /**
@@ -374,15 +368,7 @@
             disabled ? this._data.put("disabled_count", ++disabled_count) : void(0)
 
             var compiled = $.template(template);
-            html += compiled({
-                self: this,
-                dataArray: dataArray,
-                i: i,
-                itemName: itemName,
-                valueName: valueName,
-                selected: selected,
-                disabled: disabled
-            })
+            html += compiled({ self: this, dataArray: dataArray, i: i, itemName: itemName, valueName: valueName, selected: selected, disabled: disabled })
         }
 
         this._data.put("left_pre_selection_count", 0);
@@ -413,6 +399,17 @@
             </li>
             */
         })
+
+        var groupTemplate = parseHTMLTemplate(function() {
+            /*
+            <li class="transfer-double-group-list-li transfer-double-group-list-li-{{= self.id }}">
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox-normal group-select-all-{{= self.id }}" id="group_{{= i }}_{{= self.id }}">
+                    <label for="group_{{= i }}_{{= self.id }}" class="group-name-{{= self.id }}">{{= groupDataArray[i][groupItemName] }}</label>
+                </div>
+                <ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-{{= self.id }}">
+            */
+        })
         
         for (var i = 0; i < groupDataArray.length; i++) {
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
@@ -422,14 +419,9 @@
                 _value["left_total_count"] = groupDataArray[i][groupArrayName].length
                 this._group_data.put('group_' + i + '_' + this.id, _value);
 
-                html +=
-                '<li class="transfer-double-group-list-li transfer-double-group-list-li-' + id + '">'
-                + '<div class="checkbox-group">' +
-                '<input type="checkbox" class="checkbox-normal group-select-all-' + id + '" id="group_' + i + '_' + id + '">' +
-                '<label for="group_' + i + '_' + id + '" class="group-name-' + id + '">' + groupDataArray[i][groupItemName] + '</label>' +
-                '</div>';
+                var groupTemplateCompiled = $.template(groupTemplate);
+                html += groupTemplateCompiled({ self: this, groupDataArray: groupDataArray, i: i, groupItemName: groupItemName })
 
-                html += '<ul class="transfer-double-group-list-li-ul transfer-double-group-list-li-ul-' + id + '">'
                 for (var j = 0; j < groupDataArray[i][groupArrayName].length; j++) {
 
                     var selected = groupDataArray[i][groupArrayName][j].selected || false;
@@ -440,17 +432,8 @@
                     var groupItem = this._group_data.get('group_' + i + '_' + this.id);
                     selected ? groupItem["left_total_count"] -= 1 : void(0)
 
-                    var compiled = $.template(groupItemTemplate);
-                    html += compiled({
-                        self: this,
-                        groupDataArray: groupDataArray,
-                        i: i,
-                        j: j,
-                        groupArrayName: groupArrayName,
-                        itemName: itemName,
-                        valueName: valueName,
-                        selected: selected
-                    })
+                    var groupItemTemplateCompiled = $.template(groupItemTemplate);
+                    html += groupItemTemplateCompiled({ self: this, groupDataArray: groupDataArray, i: i, j: j, groupArrayName: groupArrayName, itemName: itemName, valueName: valueName, selected: selected })
                 }
                 html += '</ul></li>'
             }
