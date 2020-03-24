@@ -21,8 +21,6 @@
             rightTabNameText: "selected items",
             // search placeholder text
             searchPlaceholderText: "search",
-            // total text
-            totalText: "total",
             // items data array
             dataArray: [],
             // group data array
@@ -38,9 +36,9 @@
         // search placeholder text
         this.searchPlaceholderText = this.settings.searchPlaceholderText;
         // default total number text template
-        this.default_total_num_text_template = this.settings.totalText + ": {total_num}";
+        this.default_total_num_text_template = "pre_num/total_num";
         // default zero item
-        this.default_right_item_total_num_text = get_total_num_text(this.default_total_num_text_template, 0);
+        this.default_right_item_total_num_text = get_total_num_text(this.default_total_num_text_template, 0, 0);
         // item total number
         this.item_total_num = this.settings.dataArray.length;
         // group item total number
@@ -287,11 +285,11 @@
 
         // render total num
         this.$element.find(this.totalNumLabelClass).empty();
-        this.$element.find(this.totalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("left_total_count")));
+        this.$element.find(this.totalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, 0, this._data.get("left_total_count")));
 
         // render right total num
         this.$element.find(this.selectedTotalNumLabelClass).empty();
-        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
+        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, 0, this._data.get("right_total_count")));
     }
 
     /**
@@ -313,11 +311,11 @@
 
         // render total num
         this.$element.find(this.groupTotalNumLabelClass).empty();
-        this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, left_total_count));
+        this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, 0, left_total_count));
 
         // render right total num
         this.$element.find(this.selectedTotalNumLabelClass).empty();
-        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
+        this.$element.find(this.selectedTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, 0, this._data.get("right_total_count")));
     }
 
     /**
@@ -332,14 +330,17 @@
         for (var i = 0; i < dataArray.length; i++) {
 
             var selected = dataArray[i].selected || false;
+            var disabled = dataArray[i].disabled || false;
             var right_total_count = this._data.get("right_total_count") || 0;
+            var disabled_count = this._data.get("disabled_count") || 0;
             this._data.get("right_total_count") == undefined ? this._data.put("right_total_count", right_total_count) : void(0)
             selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
+            disabled ? this._data.put("disabled_count", ++disabled_count) : void(0)
 
             html +=
             '<li class="transfer-double-list-li transfer-double-list-li-' + this.id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
             '<div class="checkbox-group">' +
-            '<input type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-'
+            '<input' + (disabled ? ' disabled="disabled" ' : '') + ' type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-'
             + this.id + '" id="itemCheckbox_' + i + '_' + this.id + '">' +
             '<label class="checkbox-name-' + this.id + '" for="itemCheckbox_' + i + '_' + this.id + '">' + dataArray[i][itemName] + '</label>' +
             '</div>' +
@@ -475,6 +476,7 @@
 
             var left_pre_selection_count = self._data.get("left_pre_selection_count");
             self._data.put("left_pre_selection_count", left_pre_selection_count + pre_selection_num);
+            self.$element.find(self.totalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
 
             if (self._data.get("left_pre_selection_count") > 0) {
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
@@ -485,6 +487,9 @@
             if (self._data.get("left_pre_selection_count") < self._data.get("left_total_count")) {
                 $(self.leftItemSelectAllId).prop("checked", false);
             } else if (self._data.get("left_pre_selection_count") == self._data.get("left_total_count")) {
+                $(self.leftItemSelectAllId).prop("checked", true);
+            }
+            if (self._data.get("left_pre_selection_count") == (self._data.get("left_total_count") - self._data.get("disabled_count"))) {
                 $(self.leftItemSelectAllId).prop("checked", true);
             }
         });
@@ -511,6 +516,8 @@
                 total_pre_selection_num += value["left_pre_selection_count"]
                 remain_left_total_count += value["left_total_count"]
             });
+
+            self.$element.find(self.groupTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, total_pre_selection_num, remain_left_total_count));
 
             if (total_pre_selection_num > 0) {
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
@@ -587,6 +594,7 @@
                     $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 }
             }
+            self.$element.find(self.groupTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, left_pre_selection_count, left_total_count));
         });
     }
 
@@ -597,6 +605,8 @@
         var self = this;
         $(self.groupItemSelectAllId).on("click", function () {
             var groupCheckboxItems = self.$element.find(self.groupCheckboxItemClass);
+            var left_pre_selection_count = 0;
+            var left_total_count = 0;
             if ($(this).is(':checked')) {
                 for (var i = 0; i < groupCheckboxItems.length; i++) {
                     if (groupCheckboxItems.parent("div").parent("li").eq(i).css('display') != "none" && !groupCheckboxItems.eq(i).is(':checked')) {
@@ -610,6 +620,8 @@
 
                 self._group_data.forEach(function (key, value) {
                     value["left_pre_selection_count"] = value["left_total_count"];
+                    left_pre_selection_count += value["left_pre_selection_count"];
+                    left_total_count += value["left_total_count"];
                 })
 
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
@@ -626,10 +638,13 @@
 
                 self._group_data.forEach(function (key, value) {
                     value["left_pre_selection_count"] = 0;
+                    left_pre_selection_count = 0;
+                    left_total_count += value["left_total_count"];
                 })
 
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
             }
+            self.$element.find(self.groupTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, left_pre_selection_count, left_total_count));
         });
     }
 
@@ -675,13 +690,16 @@
         var self = this;
         $(self.leftItemSelectAllId).on("click", function () {
             var checkboxItems = self.$element.find(self.checkboxItemClass);
+            var pre_selection_num = self._data.get("left_pre_selection_count");
             if ($(this).is(':checked')) {
                 for (var i = 0; i < checkboxItems.length; i++) {
-                    if (checkboxItems.eq(i).parent("div").parent("li").css('display') != "none" && !checkboxItems.eq(i).is(':checked')) {
-                        checkboxItems.eq(i).prop("checked", true);
+                    if (!checkboxItems.eq(i).prop("disabled")) {
+                        if (checkboxItems.eq(i).parent("div").parent("li").css('display') != "none" && !checkboxItems.eq(i).is(':checked') && !checkboxItems.eq(i).prop('disabled')) {
+                            checkboxItems.eq(i).prop("checked", true);
+                            self._data.put("left_pre_selection_count", ++pre_selection_num);
+                        }
                     }
                 }
-                self._data.put("left_pre_selection_count", self._data.get("left_total_count"));
                 $(self.addSelectedButtonId).addClass("btn-arrow-active");
             } else {
                 for (var i = 0; i < checkboxItems.length; i++) {
@@ -692,6 +710,7 @@
                 $(self.addSelectedButtonId).removeClass("btn-arrow-active");
                 self._data.put("left_pre_selection_count", 0);
             }
+            self.$element.find(self.totalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
         });
     }
 
@@ -729,6 +748,8 @@
                 $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
                 self._data.put("right_pre_selection_count", 0);
             }
+
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_pre_selection_count"), self._data.get("right_total_count")));
 
         });
     }
@@ -773,6 +794,7 @@
 
             var right_pre_selection_count = self._data.get("right_pre_selection_count");
             self._data.put("right_pre_selection_count", right_pre_selection_count + pre_selection_num);
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_pre_selection_count"), self._data.get("right_total_count")));
 
             if (self._data.get("right_pre_selection_count") > 0) {
                 $(self.deleteSelectedButtonId).addClass("btn-arrow-active");
@@ -795,9 +817,11 @@
     Transfer.prototype.move_pre_selection_items_handler = function() {
         var self = this;
         $(self.addSelectedButtonId).on("click", function () {
-            self.isGroup ? self.move_pre_selection_group_items() : self.move_pre_selection_items()
-            // callable
-            applyCallable(self);
+            if ($(this).hasClass("btn-arrow-active")) {
+                self.isGroup ? self.move_pre_selection_group_items() : self.move_pre_selection_items()
+                // callable
+                applyCallable(self);
+            }
         });
     }
 
@@ -844,9 +868,8 @@
             })
 
             var groupTotalNumLabel = this.$element.find(this.groupTotalNumLabelClass);
-            groupTotalNumLabel.empty();
-            groupTotalNumLabel.append(get_total_num_text(this.default_total_num_text_template, remain_left_total_count));
-            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
+            groupTotalNumLabel.text(get_total_num_text(this.default_total_num_text_template, 0, remain_left_total_count));
+            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, 0, this._data.get("right_total_count")));
 
             if (remain_left_total_count == 0) {
                 $(this.groupItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
@@ -896,10 +919,10 @@
 
         if (pre_selection_num > 0) {
             var totalNumLabel = self.$element.find(self.totalNumLabelClass);
-            totalNumLabel.empty();
-            totalNumLabel.append(get_total_num_text(self.default_total_num_text_template, self._data.get("left_total_count")));
-            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_total_count")));
-            if (self._data.get("left_total_count") == 0) {
+            self.$element.find(self.totalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
+            totalNumLabel.text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, 0, self._data.get("right_total_count")));
+            if (self._data.get("left_total_count") == 0 || (self._data.get("disabled_count") == self._data.get("left_total_count"))) {
                 $(self.leftItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
             }
 
@@ -914,10 +937,12 @@
     Transfer.prototype.move_selected_items_handler = function() {
         var self = this;
         $(self.deleteSelectedButtonId).on("click", function () {
-            self.isGroup ? self.move_selected_group_items() : self.move_selected_items()
-            $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
-            // callable
-            applyCallable(self);
+            if ($(this).hasClass("btn-arrow-active")) {
+                self.isGroup ? self.move_selected_group_items() : self.move_selected_items()
+                $(self.deleteSelectedButtonId).removeClass("btn-arrow-active");
+                // callable
+                applyCallable(self);
+            }
         });
     }
 
@@ -965,8 +990,8 @@
                 $(this.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
             }
 
-            this.$element.find(this.groupTotalNumLabelClass).append(get_total_num_text(this.default_total_num_text_template, remain_left_total_count));
-            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, this._data.get("right_total_count")));
+            this.$element.find(this.groupTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, 0, remain_left_total_count));
+            this.$element.find(this.selectedTotalNumLabelClass).text(get_total_num_text(this.default_total_num_text_template, 0, this._data.get("right_total_count")));
             if ($(this.groupItemSelectAllId).is(':checked')) {
                 $(this.groupItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
@@ -1010,9 +1035,8 @@
 
 
         if (pre_selection_num > 0) {
-            self.$element.find(self.totalNumLabelClass).empty();
-            self.$element.find(self.totalNumLabelClass).append(get_total_num_text(self.default_total_num_text_template, self._data.get("left_total_count")));
-            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_total_count")));
+            self.$element.find(self.totalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
+            self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("right_pre_selection_count"), self._data.get("right_total_count")));
             if ($(self.leftItemSelectAllId).is(':checked')) {
                 $(self.leftItemSelectAllId).prop("checked", false).removeAttr("disabled");
             }
@@ -1118,13 +1142,14 @@
     }
 
     /**
-     * get the total number by replacing the template
+     * replacing the template
      * @param {*} template
+     * @param {*} pre_num
      * @param {*} total_num
      */
-    function get_total_num_text(template, total_num) {
+    function get_total_num_text(template, pre_num, total_num) {
         var _template = template;
-        return _template.replace(/{total_num}/g, total_num);
+        return _template.replace("pre_num", pre_num).replace("total_num", total_num);
     }
 
     /**

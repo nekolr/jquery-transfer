@@ -26,7 +26,6 @@ A jQuery plugin that is a shuttle box.
 | tabNameText | The left tab text | string | items |
 | rightTabNameText | The right tab text | string | selected items |
 | searchPlaceholderText | The searcher's placeholder text | string | search |
-| totalText | The total text | string | total |
 | dataArray | items data array | array |  |
 | groupDataArray | grouping item data array | array |  |
 
@@ -96,4 +95,43 @@ var settings = {
 var transfer = $(".transfer").transfer(settings);
 // get selected items
 transfer.getSelectedItems();
+```
+
+## selected data
+
+```js
+var dataArray = [
+    {
+        item: "Beijing", 
+        value: 1,
+        selected: true
+    },
+    {
+        item: "Shanghai", 
+        value: 2
+    },
+    {
+        item: "Tokyo", 
+        value: 6
+    }
+];
+```
+
+## disabled data
+```js
+var dataArray = [
+    {
+        item: "Beijing", 
+        value: 1,
+        disabled: true
+    },
+    {
+        item: "Shanghai", 
+        value: 2
+    },
+    {
+        item: "Tokyo", 
+        value: 6
+    }
+];
 ```
