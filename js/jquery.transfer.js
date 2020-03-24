@@ -1268,7 +1268,7 @@
 
 
 /**
- * 使用 underscore.template 扩展 jquery
+ * underscore.template
  */
 ;(function ($) {
     var escapes = {
