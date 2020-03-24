@@ -167,110 +167,135 @@
      * generate transfer
      */
     Transfer.prototype.generate_transfer = function() {
-        var html =
-            '<div class="transfer-double" id="transfer_double_' + this.id + '">'
-            + '<div class="transfer-double-header"></div>'
-            + '<div class="transfer-double-content clearfix">'
-            + this.generate_left_part()
-            + '<div class="transfer-double-content-middle">'
-            + '<div class="btn-select-arrow" id="add_selected_' + this.id + '"><i class="iconfont icon-forward"></i></div>'
-            + '<div class="btn-select-arrow" id="delete_selected_' + this.id + '"><i class="iconfont icon-back"></i></div>'
-            + '</div>'
-            + this.generate_right_part()
-            + '</div>'
-            + '<div class="transfer-double-footer"></div>'
-            + '</div>';
-        return html;
-    }
 
-    /**
-     * generate transfer's left part
-     */
-    Transfer.prototype.generate_left_part = function() {
-        return '<div class="transfer-double-content-left">'
-        + '<div class="transfer-double-content-param">'
-        + '<div class="param-item">' + (this.isGroup ? this.tabNameText : this.tabNameText) + '</div>'
-        + '</div>'
-        + (this.isGroup ? this.generate_group_items_container() : this.generate_items_container())
-        + '</div>'
+        var template = parseHTMLTemplate(function() {
+            /*
+            <div class="transfer-double" id="transfer_double_{{=self.id }}">
+                <div class="transfer-double-header"></div>
+                <div class="transfer-double-content clearfix">
+
+                    {{ // left part start }}
+
+                    <div class="transfer-double-content-left">
+                        <div class="transfer-double-content-param">
+                            <div class="param-item">{{= self.tabNameText }}</div>
+                        </div>
+
+                        {{= self.isGroup ? self.generate_group_items_container() : self.generate_items_container() }}
+
+                    </div>
+
+                    {{ //  left part end }}
+
+                    <div class="transfer-double-content-middle">
+                        <div class="btn-select-arrow" id="add_selected_{{=self.id }}"><i class="iconfont icon-forward"></i></div>
+                        <div class="btn-select-arrow" id="delete_selected_{{=self.id }}"><i class="iconfont icon-back"></i></div>
+                    </div>
+
+                    {{ // right part start }}
+
+                    <div class="transfer-double-content-right">
+                        <div class="transfer-double-content-param">
+                            <div class="param-item">{{= self.rightTabNameText }}</div>
+                        </div>
+                        <div class="transfer-double-selected-list">
+                            <div class="transfer-double-selected-list-header">
+                                <div class="transfer-double-selected-list-search">
+                                    <input class="transfer-double-selected-list-search-input" type="text" id="selectedListSearch_{{= self.id }}" placeholder="{{= self.searchPlaceholderText }}" value="" />
+                                </div>
+                            </div>
+                            <div class="transfer-double-selected-list-content">
+                                <div class="transfer-double-selected-list-main">
+                                    <ul class="transfer-double-selected-list-ul transfer-double-selected-list-ul-{{= self.id }}"></ul>
+                                </div>
+                            </div>
+                            <div class="transfer-double-list-footer">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_{{= self.id }}">
+                                    <label for="rightItemSelectAll_{{= self.id }}" class="selected_total_num_{{= self.id }}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ // right part end }}
+
+                </div>
+                <div class="transfer-double-footer"></div>
+            </div>
+            */
+        })
+
+        var compiled = $.template(template);
+        return compiled({
+            self: this
+        })
     }
 
     /**
      * generate group items container
      */
     Transfer.prototype.generate_group_items_container = function() {
-        return '<div class="transfer-double-list transfer-double-list-' + this.id + '">'
-        + '<div class="transfer-double-list-header">'
-        + '<div class="transfer-double-list-search">'
-        + '<input class="transfer-double-list-search-input" type="text" id="groupListSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-list-content">'
-        + '<div class="transfer-double-list-main">'
-        + '<ul class="transfer-double-group-list-ul transfer-double-group-list-ul-' + this.id + '">'
-        + '</ul>'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-list-footer">'
-        + '<div class="checkbox-group">'
-        + '<input type="checkbox" class="checkbox-normal" id="groupItemSelectAll_' + this.id + '"><label for="groupItemSelectAll_' + this.id + '" class="group_total_num_' + this.id + '"></label>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
+
+        var template = parseHTMLTemplate(function() {
+            /*
+            <div class="transfer-double-list transfer-double-list-{{= self.id }}">
+                <div class="transfer-double-list-header">
+                    <div class="transfer-double-list-search">
+                        <input class="transfer-double-list-search-input" type="text" id="groupListSearch_{{= self.id }}" placeholder="{{= self.searchPlaceholderText }}" value="" />
+                    </div>
+                </div>
+                <div class="transfer-double-list-content">
+                    <div class="transfer-double-list-main">
+                        <ul class="transfer-double-group-list-ul transfer-double-group-list-ul-{{= self.id }}"></ul>
+                    </div>
+                </div>
+                <div class="transfer-double-list-footer">
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox-normal" id="groupItemSelectAll_{{= self.id }}"><label for="groupItemSelectAll_{{= self.id }}" class="group_total_num_{{= self.id }}"></label>
+                    </div>
+                </div>
+            </div>
+            */
+        })
+
+        var compiled = $.template(template);
+        return compiled({
+            self: this
+        })
     }
 
     /**
      * generate items container
      */
     Transfer.prototype.generate_items_container = function() {
-        return '<div class="transfer-double-list transfer-double-list-' + this.id + '">'
-        + '<div class="transfer-double-list-header">'
-        + '<div class="transfer-double-list-search">'
-        + '<input class="transfer-double-list-search-input" type="text" id="listSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-list-content">'
-        + '<div class="transfer-double-list-main">'
-        + '<ul class="transfer-double-list-ul transfer-double-list-ul-' + this.id + '">'
-        + '</ul>'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-list-footer">'
-        + '<div class="checkbox-group">'
-        + '<input type="checkbox" class="checkbox-normal" id="leftItemSelectAll_' + this.id + '"><label for="leftItemSelectAll_' + this.id + '" class="total_num_' + this.id + '"></label>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-    }
 
-    /**
-     * generate transfer's right part
-     */
-    Transfer.prototype.generate_right_part = function() {
-        return '<div class="transfer-double-content-right">'
-        + '<div class="transfer-double-content-param">'
-        + '<div class="param-item">' + this.rightTabNameText + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-selected-list">'
-        + '<div class="transfer-double-selected-list-header">'
-        + '<div class="transfer-double-selected-list-search">'
-        + '<input class="transfer-double-selected-list-search-input" type="text" id="selectedListSearch_' + this.id + '" placeholder="' + this.searchPlaceholderText + '" value="" />'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-selected-list-content">'
-        + '<div class="transfer-double-selected-list-main">'
-        + '<ul class="transfer-double-selected-list-ul transfer-double-selected-list-ul-' + this.id + '">'
-        + '</ul>'
-        + '</div>'
-        + '</div>'
-        + '<div class="transfer-double-list-footer">'
-        + '<div class="checkbox-group">'
-        + '<input type="checkbox" class="checkbox-normal" id="rightItemSelectAll_' + this.id + '">'
-        + '<label for="rightItemSelectAll_' + this.id + '" class="selected_total_num_' +  this.id + '"></label>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
+        var template = parseHTMLTemplate(function() {
+            /*
+            <div class="transfer-double-list transfer-double-list-{{= self.id }}">
+                <div class="transfer-double-list-header">
+                    <div class="transfer-double-list-search">
+                        <input class="transfer-double-list-search-input" type="text" id="listSearch_{{= self.id }}" placeholder="{{= self.searchPlaceholderText }}" value="" />
+                    </div>
+                </div>
+                <div class="transfer-double-list-content">
+                    <div class="transfer-double-list-main">
+                        <ul class="transfer-double-list-ul transfer-double-list-ul-{{= self.id }}"></ul>
+                    </div>
+                </div>
+                <div class="transfer-double-list-footer">
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox-normal" id="leftItemSelectAll_{{= self.id }}"><label for="leftItemSelectAll_{{= self.id }}" class="total_num_{{= self.id }}"></label>
+                    </div>
+                </div>
+            </div>
+           */ 
+        })
+
+        var compiled = $.template(template);
+        return compiled({
+            self: this
+        })
     }
 
     /**
@@ -327,6 +352,17 @@
         var itemName = this.settings.itemName;
         var valueName = this.settings.valueName;
 
+        var template = parseHTMLTemplate(function() {
+            /*
+            <li class="transfer-double-list-li transfer-double-list-li-{{= self.id }} {{= selected ? 'selected-hidden' : ' ' }}">
+                <div class="checkbox-group">
+                    <input {{= disabled ? disabled="disabled" : "" }} type="checkbox" value="{{= dataArray[i][valueName] }}" class="checkbox-normal checkbox-item-{{= self.id }}" id="itemCheckbox_{{= i }}_{{= self.id }}">
+                    <label class="checkbox-name-{{= self.id }}" for="itemCheckbox_{{= i }}_{{= self.id }}">{{= dataArray[i][itemName] }}</label>
+                </div>
+            </li>
+            */
+        })
+
         for (var i = 0; i < dataArray.length; i++) {
 
             var selected = dataArray[i].selected || false;
@@ -337,14 +373,16 @@
             selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
             disabled ? this._data.put("disabled_count", ++disabled_count) : void(0)
 
-            html +=
-            '<li class="transfer-double-list-li transfer-double-list-li-' + this.id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
-            '<div class="checkbox-group">' +
-            '<input' + (disabled ? ' disabled="disabled" ' : '') + ' type="checkbox" value="' + dataArray[i][valueName] + '" class="checkbox-normal checkbox-item-'
-            + this.id + '" id="itemCheckbox_' + i + '_' + this.id + '">' +
-            '<label class="checkbox-name-' + this.id + '" for="itemCheckbox_' + i + '_' + this.id + '">' + dataArray[i][itemName] + '</label>' +
-            '</div>' +
-            '</li>'
+            var compiled = $.template(template);
+            html += compiled({
+                self: this,
+                dataArray: dataArray,
+                i: i,
+                itemName: itemName,
+                valueName: valueName,
+                selected: selected,
+                disabled: disabled
+            })
         }
 
         this._data.put("left_pre_selection_count", 0);
@@ -365,7 +403,17 @@
         var itemName = this.settings.itemName;
         var valueName = this.settings.valueName;
 
-
+        var groupItemTemplate = parseHTMLTemplate(function() {
+            /*
+            <li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-{{= self.id }} {{= selected ? 'selected-hidden' : '' }}">
+                <div class="checkbox-group">
+                    <input type="checkbox" value="{{= groupDataArray[i][groupArrayName][j][valueName] }}" class="checkbox-normal group-checkbox-item-{{= self.id }} belongs-group-{{= i }}-{{= self.id }}" id="group_{{= i }}_checkbox_{{= j }}_{{= self.id }}">
+                    <label for="group_{{= i }}_checkbox_{{= j }}_{{= self.id }}" class="group-checkbox-name-{{= self.id }}">{{= groupDataArray[i][groupArrayName][j][itemName] }}</label>
+                </div>
+            </li>
+            */
+        })
+        
         for (var i = 0; i < groupDataArray.length; i++) {
             if (groupDataArray[i][groupArrayName] && groupDataArray[i][groupArrayName].length > 0) {
 
@@ -392,12 +440,17 @@
                     var groupItem = this._group_data.get('group_' + i + '_' + this.id);
                     selected ? groupItem["left_total_count"] -= 1 : void(0)
 
-                    html += '<li class="transfer-double-group-list-li-ul-li transfer-double-group-list-li-ul-li-' + id + ' ' + (selected ? 'selected-hidden' : '') + '">' +
-                        '<div class="checkbox-group">' +
-                        '<input type="checkbox" value="' + groupDataArray[i][groupArrayName][j][valueName] + '" class="checkbox-normal group-checkbox-item-' + id + ' belongs-group-' + i + '-' + id + '" id="group_' + i + '_checkbox_' + j + '_' + id + '">' +
-                        '<label for="group_' + i + '_checkbox_' + j + '_' + id + '" class="group-checkbox-name-' + id + '">' + groupDataArray[i][groupArrayName][j][itemName] + '</label>' +
-                        '</div>' +
-                        '</li>';
+                    var compiled = $.template(groupItemTemplate);
+                    html += compiled({
+                        self: this,
+                        groupDataArray: groupDataArray,
+                        i: i,
+                        j: j,
+                        groupArrayName: groupArrayName,
+                        itemName: itemName,
+                        valueName: valueName,
+                        selected: selected
+                    })
                 }
                 html += '</ul></li>'
             }
@@ -1203,4 +1256,95 @@
         }
     }
 
+    /**
+     * parse html template
+     * @param {*} f 
+     */
+    function parseHTMLTemplate(func) {
+        return func.toString().match(/\/\*([\s\S]*?)\*\//)[1]
+    }
+
 }(jQuery));
+
+
+/**
+ * 使用 underscore.template 扩展 jquery
+ */
+;(function ($) {
+    var escapes = {
+        "'":      "'",
+        '\\':     '\\',
+        '\r':     'r',
+        '\n':     'n',
+        '\u2028': 'u2028',
+        '\u2029': 'u2029'
+    }, escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '`': '&#x60;'
+    };
+    var escapeChar = function(match) {
+        return '\\' + escapes[match];
+    };
+    var createEscaper = function(map) {
+        var escaper = function(match) {
+            return map[match];
+        };
+        var source = "(?:&|<|>|\"|'|`)";
+        var testRegexp = RegExp(source);
+        var replaceRegexp = RegExp(source, 'g');
+        return function(string) {
+            string = string == null ? '' : '' + string;
+            return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+        };
+    };
+    var escape = createEscaper(escapeMap);
+    $.extend({
+        templateSettings: {
+            escape: /{{-([\s\S]+?)}}/g,
+            interpolate : /{{=([\s\S]+?)}}/g,
+            evaluate: /{{([\s\S]+?)}}/g
+        },
+        escapeHtml: escape,
+        template: function (text, settings) {
+            var options = $.extend(true, {}, this.templateSettings, settings);
+            var matcher = RegExp([options.escape.source,
+			options.interpolate.source,
+			options.evaluate.source].join('|') + '|$', 'g');
+            var index = 0;
+            var source = "__p+='";
+            text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+                source += text.slice(index, offset).replace(/\\|'|\r|\n|\u2028|\u2029/g, escapeChar);
+                index = offset + match.length;
+                if (escape) {
+                    source += "'+\n((__t=(" + escape + "))==null?'':$.escapeHtml(__t))+\n'";
+                } else if (interpolate) {
+                    source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+                } else if (evaluate) {
+                    source += "';\n" + evaluate + "\n__p+='";
+                }
+                return match;
+            });
+            source += "';\n";
+            if (!options.variable) source = 'with(obj||{}){\n' + source + '}\n';
+            source = "var __t,__p='',__j=Array.prototype.join," +
+                "print=function(){__p+=__j.call(arguments,'');};\n" +
+                source + 'return __p;\n';
+            try {
+                var render = new Function(options.variable || 'obj', source);
+            } catch (e) {
+                e.source = source;
+                throw e;
+            }
+            var template = function(data) {
+                return render.call(this, data);
+            };
+            var argument = options.variable || 'obj';
+            template.source = 'function(' + argument + '){\n' + source + '}';
+            return template;
+        }
+    });
+})(jQuery);
