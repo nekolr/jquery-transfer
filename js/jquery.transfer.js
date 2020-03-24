@@ -1096,8 +1096,6 @@
      * apply callable
      */
     function applyCallable(transfer) {
-        console.log("data:", transfer._data)
-        console.log("groupData:", transfer._group_data)
         if (Object.prototype.toString.call(transfer.settings.callable) === "[object Function]") {
           var selected_items = get_selected_items(transfer);
 
