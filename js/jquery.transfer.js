@@ -170,7 +170,7 @@
 
         var template = parseHTMLTemplate(function() {
             /*
-            <div class="transfer-double" id="transfer_double_{{=self.id }}">
+            <div class="transfer-double" id="transfer_double_{{= self.id }}">
                 <div class="transfer-double-header"></div>
                 <div class="transfer-double-content clearfix">
 
@@ -188,8 +188,8 @@
                     {{ //  left part end }}
 
                     <div class="transfer-double-content-middle">
-                        <div class="btn-select-arrow" id="add_selected_{{=self.id }}"><i class="iconfont icon-forward"></i></div>
-                        <div class="btn-select-arrow" id="delete_selected_{{=self.id }}"><i class="iconfont icon-back"></i></div>
+                        <div class="btn-select-arrow" id="add_selected_{{= self.id }}"><i class="iconfont icon-forward"></i></div>
+                        <div class="btn-select-arrow" id="delete_selected_{{= self.id }}"><i class="iconfont icon-back"></i></div>
                     </div>
 
                     {{ // right part start }}
@@ -362,10 +362,10 @@
             var selected = dataArray[i].selected || false;
             var disabled = dataArray[i].disabled || false;
             var right_total_count = this._data.get("right_total_count") || 0;
-            var disabled_count = this._data.get("disabled_count") || 0;
+            var disabled_count = this._data.get("left_disabled_count") || 0;
             this._data.get("right_total_count") == undefined ? this._data.put("right_total_count", right_total_count) : void(0)
             selected ? this._data.put("right_total_count", ++right_total_count) : void(0)
-            disabled ? this._data.put("disabled_count", ++disabled_count) : void(0)
+            !selected && disabled ? this._data.put("left_disabled_count", ++disabled_count) : void(0)
 
             var compiled = $.template(template);
             html += compiled({ self: this, dataArray: dataArray, i: i, itemName: itemName, valueName: valueName, selected: selected, disabled: disabled })
@@ -451,16 +451,21 @@
         var itemName = this.settings.itemName;
         var valueName = this.settings.valueName;
         var selected_count = 0;
+        var disabled_count = 0;
 
         this._data.put("right_pre_selection_count", selected_count);
         this._data.put("right_total_count", selected_count);
 
         for (var i = 0; i < dataArray.length; i++) {
             if (dataArray[i].selected || false) {
+                var disabled = dataArray[i].disabled || false;
+                disabled ? disabled_count++ : void(0)
                 this._data.put("right_total_count", ++selected_count);
-                html += this.generate_item(this.id, i, dataArray[i][valueName], dataArray[i][itemName]);
+                html += this.generate_item(this.id, i, dataArray[i][valueName], dataArray[i][itemName], disabled);
             }
         }
+
+        this._data.put("right_disabled_count", disabled_count);
 
         if (this._data.get("right_total_count") == 0) {
             $(this.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
@@ -525,7 +530,7 @@
             } else if (self._data.get("left_pre_selection_count") == self._data.get("left_total_count")) {
                 $(self.leftItemSelectAllId).prop("checked", true);
             }
-            if (self._data.get("left_pre_selection_count") == (self._data.get("left_total_count") - self._data.get("disabled_count"))) {
+            if (self._data.get("left_pre_selection_count") == (self._data.get("left_total_count") - self._data.get("left_disabled_count"))) {
                 $(self.leftItemSelectAllId).prop("checked", true);
             }
         });
@@ -761,7 +766,7 @@
                 self._data.put("right_pre_selection_count", 0);
                 var right_pre_selection_count = self._data.get("right_pre_selection_count");
                 for (var i = 0; i < checkboxSelectedItems.length; i++) {
-                    if (checkboxSelectedItems.eq(i).parent("div").parent("li").css('display') != "none") {
+                    if (checkboxSelectedItems.eq(i).parent("div").parent("li").css('display') != "none" && !checkboxSelectedItems.eq(i).prop("disabled")) {
                         checkboxSelectedItems.eq(i).prop("checked", true);
                         self._data.put("right_pre_selection_count", ++right_pre_selection_count);
                     }
@@ -772,6 +777,9 @@
                 if (self._data.get("right_pre_selection_count") < self._data.get("right_total_count")) {
                     $(self.rightItemSelectAllId).prop("checked", false);
                 } else if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count")) {
+                    $(self.rightItemSelectAllId).prop("checked", true);
+                }
+                if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count") - self._data.get("right_disabled_count")) {
                     $(self.rightItemSelectAllId).prop("checked", true);
                 }
 
@@ -841,6 +849,9 @@
             if (self._data.get("right_pre_selection_count") < self._data.get("right_total_count")) {
                 $(self.rightItemSelectAllId).prop("checked", false);
             } else if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count")) {
+                $(self.rightItemSelectAllId).prop("checked", true);
+            }
+            if (self._data.get("right_pre_selection_count") == self._data.get("right_total_count") - self._data.get("right_disabled_count")) {
                 $(self.rightItemSelectAllId).prop("checked", true);
             }
 
@@ -937,7 +948,7 @@
                 var labelText = self.$element.find(self.checkboxItemLabelClass).eq(i).text();
                 var value = checkboxItems.eq(i).val();
                 self.$element.find(self.transferDoubleListLiClass).eq(i).css("display", "").addClass("selected-hidden");
-                html += self.generate_item(self.id, index, value, labelText);
+                html += self.generate_item(self.id, index, value, labelText, false);
                 pre_selection_num++;
 
                 var left_pre_selection_count = self._data.get("left_pre_selection_count");
@@ -958,7 +969,7 @@
             self.$element.find(self.totalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
             totalNumLabel.text(get_total_num_text(self.default_total_num_text_template, self._data.get("left_pre_selection_count"), self._data.get("left_total_count")));
             self.$element.find(self.selectedTotalNumLabelClass).text(get_total_num_text(self.default_total_num_text_template, 0, self._data.get("right_total_count")));
-            if (self._data.get("left_total_count") == 0 || (self._data.get("disabled_count") == self._data.get("left_total_count"))) {
+            if (self._data.get("left_total_count") == 0 || (self._data.get("left_disabled_count") == self._data.get("left_total_count"))) {
                 $(self.leftItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
             }
 
@@ -1065,7 +1076,7 @@
             }
         }
 
-        if (self._data.get("right_total_count") == 0) {
+        if (self._data.get("right_total_count") == 0 || (self._data.get("right_pre_selection_count") == self._data.get("right_total_count") - self._data.get("right_disabled_count"))) {
             $(self.rightItemSelectAllId).prop("checked", true).prop("disabled", "disabled");
         }
 
@@ -1107,25 +1118,41 @@
     /**
      * generate item
      */
-    Transfer.prototype.generate_item = function(id, index, value, labelText) {
-        return '<li class="transfer-double-selected-list-li  transfer-double-selected-list-li-' + id + ' .clearfix">' +
-        '<div class="checkbox-group">' +
-        '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="selectedCheckbox_' + index + '_' + id + '">' +
-        '<label class="checkbox-selected-name-' + id + '" for="selectedCheckbox_' + index + '_' + id + '">' + labelText + '</label>' +
-        '</div>' +
-        '</li>';
+    Transfer.prototype.generate_item = function(id, index, value, labelText, disabled) {
+
+        var template = parseHTMLTemplate(function() {
+            /*
+            <li class="transfer-double-selected-list-li  transfer-double-selected-list-li-{{= id }} .clearfix">
+                <div class="checkbox-group">
+                    <input {{= disabled ? disabled="disabled" : " " }} type="checkbox" value="{{= value }}" class="checkbox-normal checkbox-selected-item-{{= id }}" id="selectedCheckbox_{{= index }}_{{= id }}">
+                    <label class="checkbox-selected-name-{{= id }}" for="selectedCheckbox_{{= index }}_{{= id }}">{{= labelText }}</label>
+                </div>
+            </li>
+            */
+        })
+
+        var compiled = $.template(template);
+        return compiled({ id: id, index: index, value: value, labelText: labelText, disabled: disabled })
     }
 
     /**
      * generate group item
      */
     Transfer.prototype.generate_group_item = function(id, groupIndex, itemIndex, value, labelText) {
-        return '<li class="transfer-double-selected-list-li transfer-double-selected-list-li-' + id + ' .clearfix">' +
-        '<div class="checkbox-group">' +
-        '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + id + '" id="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' +
-        '<label class="checkbox-selected-name-' + id + '" for="group_' + groupIndex + '_selectedCheckbox_' + itemIndex + '_' + id + '">' + labelText + '</label>' +
-        '</div>' +
-        '</li>'
+
+        var template = parseHTMLTemplate(function() {
+            /*
+            <li class="transfer-double-selected-list-li transfer-double-selected-list-li-{{= id }} .clearfix">
+                <div class="checkbox-group">
+                    <input type="checkbox" value="{{= value }}" class="checkbox-normal checkbox-selected-item-{{= id }}" id="group_{{= groupIndex }}_selectedCheckbox_{{= itemIndex }}_{{= id }}">
+                    <label class="checkbox-selected-name-{{= id }}" for="group_{{= groupIndex }}_selectedCheckbox_{{= itemIndex }}_{{= id }}">{{= labelText }}</label>
+                </div>
+            </li>
+            */
+        })
+
+        var compiled = $.template(template);
+        return compiled({ id: id, groupIndex: groupIndex, itemIndex: itemIndex, value: value, labelText: labelText });
     }
 
     /**
