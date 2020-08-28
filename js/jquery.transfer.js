@@ -24,7 +24,9 @@
             // items data array
             dataArray: [],
             // group data array
-            groupDataArray: []
+            groupDataArray: [],
+            // wildcard matching item search or searching from beginning of word
+            wildcardSearch: true
         };
         // merge options
         this.settings = $.extend(this.defaults, options);
@@ -817,11 +819,21 @@
 
             transferDoubleListLis.css('display', 'none');
 
-            for (var j = 0; j < transferDoubleListLis.length; j++) {
-                if (!transferDoubleListLis.eq(j).hasClass("selected-hidden")
-                    && transferDoubleListLis.eq(j).text().trim()
-                        .substr(0, $(self.itemSearcherId).val().length).toLowerCase() == $(self.itemSearcherId).val().toLowerCase()) {
-                            transferDoubleListLis.eq(j).css('display', 'block');
+            if (self.settings.wildcardSearch) {
+                for (var j = 0; j < transferDoubleListLis.length; j++) {
+                    if (!transferDoubleListLis.eq(j).hasClass("selected-hidden")
+                        && transferDoubleListLis.eq(j).text().trim()
+                            .toLowerCase().indexOf($(self.itemSearcherId).val().toLowerCase()) > -1 ) {
+                                transferDoubleListLis.eq(j).css('display', 'block');
+                    }
+                }
+            } else {
+                for (var j = 0; j < transferDoubleListLis.length; j++) {	
+                    if (!transferDoubleListLis.eq(j).hasClass("selected-hidden")	
+                    && transferDoubleListLis.eq(j).text().trim()	
+                            .substr(0, $(self.itemSearcherId).val().length).toLowerCase() == $(self.itemSearcherId).val().toLowerCase()) {	
+                                transferDoubleListLis.eq(j).css('display', 'block');	
+                    }	
                 }
             }
         });
@@ -1106,10 +1118,19 @@
 
             transferDoubleSelectedListLis.css('display', 'none');
 
-            for (var i = 0; i < transferDoubleSelectedListLis.length; i++) {
-                if (transferDoubleSelectedListLis.eq(i).text().trim()
-                        .substr(0, $(self.selectedItemSearcherId).val().length).toLowerCase() == $(self.selectedItemSearcherId).val().toLowerCase()) {
-                            transferDoubleSelectedListLis.eq(i).css('display', 'block');
+            if (self.settings.wildcardSearch) {
+                for (var i = 0; i < transferDoubleSelectedListLis.length; i++) {
+                    if (transferDoubleSelectedListLis.eq(i).text().trim()
+                            .toLowerCase().indexOf($(self.selectedItemSearcherId).val().toLowerCase()) > -1 ) {
+                                transferDoubleSelectedListLis.eq(i).css('display', 'block');
+                    }
+                }
+            } else {
+                for (var i = 0; i < transferDoubleSelectedListLis.length; i++) {	
+                    if (transferDoubleSelectedListLis.eq(i).text().trim()	
+                            .substr(0, $(self.selectedItemSearcherId).val().length).toLowerCase() == $(self.selectedItemSearcherId).val().toLowerCase()) {	
+                                transferDoubleSelectedListLis.eq(i).css('display', 'block');	
+                    }
                 }
             }
         });
